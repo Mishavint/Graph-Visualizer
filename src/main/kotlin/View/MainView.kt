@@ -1,4 +1,9 @@
 package View
 
-class MainView {
+import javafx.scene.Parent
+import tornadofx.*
+
+class MainView : View("Graph view") {
+    override val root: Parent
+        get() = TODO("Not yet implemented")
 }
