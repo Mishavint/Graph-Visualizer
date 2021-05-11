@@ -24,7 +24,7 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
                     menu("File") {
                         item("Save to file") {
                             action {
-                                openInternalWindow<PopUp>()
+                                openInternalWindow<SavingPopUp>()
                             }
                         }
                         item("Read from file") {
@@ -90,7 +90,7 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
                         tooltip("Leiden algorithm")
                         useMaxWidth = true
                         action {
-                            openInternalWindow<PopUp>()
+                            openInternalWindow<SavingPopUp>()
                         }
                     }
 
@@ -150,34 +150,3 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
 }
 
 
-class PopUp: Fragment() {
-    private val fileName = SimpleStringProperty()
-
-    override val root = form {
-        fieldset {
-            field("Save to ") {
-                textfield(fileName)
-            }
-            vbox {
-                button("Save ") {
-                    useMaxWidth = true
-                    action {
-                        saveGraphToFile(MainView().graph())
-                        fileName.value = ""
-                        close()
-                    }
-                }
-                button("Cancel") {
-                    useMaxWidth = true
-                    action {
-                        close()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun saveGraphToFile(graphView: GraphView) {
-        GraphIO().writeToFile(graphView, fileName.get())
-    }
-}
