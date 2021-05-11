@@ -1,4 +1,4 @@
-package controller
+package visualazer.controller
 
 import tornadofx.Controller
 
