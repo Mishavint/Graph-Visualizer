@@ -1,7 +1,7 @@
-package visualazer.view
+package visualizer.view
 
 import tornadofx.doubleProperty
-import visualazer.model.Vertex
+import visualizer.model.Vertex
 import java.util.*
 
 class Algorithms(private val graphView: GraphView) {
@@ -71,10 +71,9 @@ class Algorithms(private val graphView: GraphView) {
                 }
             }
         }
-        print(centralityCoefficient)
         graphView.vertexes().forEach {
             val normalizedValue = centralityCoefficient[it.key]!! / (vertexes.size * vertexes.size / 2)
-            it.value.reBindRadiusProperty(doubleProperty(it.value.radius + 3 * normalizedValue))
+            it.value.reBindRadiusProperty(doubleProperty(it.value.radius + 8 * normalizedValue))
         }
     }
 }

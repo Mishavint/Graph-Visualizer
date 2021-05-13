@@ -1,6 +1,6 @@
-package visualazer.view
+package visualizer.view
 
-import visualazer.model.Vertex
+import visualizer.model.Vertex
 import javafx.scene.shape.Circle
 import javafx.beans.property.DoubleProperty
 import javafx.scene.paint.Color

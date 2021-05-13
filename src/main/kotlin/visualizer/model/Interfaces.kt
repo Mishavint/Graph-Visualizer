@@ -1,4 +1,4 @@
-package visualazer.model
+package visualizer.model
 
 interface Vertex {
     var element: String

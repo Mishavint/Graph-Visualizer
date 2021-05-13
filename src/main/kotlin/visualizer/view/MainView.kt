@@ -1,20 +1,20 @@
-package visualazer.view
+package visualizer.view
 
-import visualazer.controller.RandomPlacementStrategy
+import visualizer.controller.RandomPlacementStrategy
+import visualizer.GraphIO
+import visualizer.controller.FilePlacementStrategy
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.stage.FileChooser
 import javafx.stage.StageStyle
 import tornadofx.*
-import visualazer.GraphIO
-import visualazer.controller.FilePlacementStrategy
+import visualizer.controller.CircularPlacementStrategy
 import java.io.File
 
-class MainView : View("Graph visualazer.visualazer.view.view") {
+class MainView : View("Graph visualizer") {
     private val fileName = SimpleStringProperty()
-    private val graph = GraphView(props.SAMPLE_GRAPH)
+    private var graph = GraphView(props.SAMPLE_GRAPH)
     private val strategy: RandomPlacementStrategy by inject()
-    private val reStrategy: FilePlacementStrategy by inject()
 
     override val root = borderpane {
 
@@ -24,7 +24,12 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
                     menu("File") {
                         item("Save to file") {
                             action {
-                                openInternalWindow<SavingPopUp>()
+                                fileName.value = chooseFile(
+                                    title = "Save to",
+                                    filters = arrayOf(FileChooser.ExtensionFilter("Text files", "*.csv")),
+                                    mode = FileChooserMode.Save
+                                ).checkFileName()
+                                GraphIO().writeToFile(graph, fileName.get())
                             }
                         }
                         item("Read from file") {
@@ -36,7 +41,8 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
                                         )
                                     )
                                 ).checkFileName()
-                                drawNewGraph()
+                                val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
+                                drawNewGraph(vertexInfo)
                             }
                         }
                         separator()
@@ -103,6 +109,30 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
                             Algorithms(graph).mainVertexes()
                         }
                     }
+
+                    button("Graph1 (1K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "soc-wiki-Vote.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph2 (5K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "soc-advogato.edges")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph3 (34)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "soc-karate.mtx")
+                            arrangeInCircle()
+                        }
+                    }
                 }
                 bottom = hbox {
                     spacing = 2.0
@@ -131,23 +161,21 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
         }
     }
 
-    init {
-        arrangeVertexes()
+    private fun arrangeInCircle() {
+        currentStage?.apply {
+            CircularPlacementStrategy().place(graph.width, graph.height, graph.vertexes().values)
+        }
     }
 
-    fun graph() = graph
-
-    private fun drawNewGraph() {
-        val filePlacementStrategy = FilePlacementStrategy()
+    private fun drawNewGraph(vertexInfo: MutableMap<String, GraphIO.VertexInfo>) {
         currentStage?.apply {
-            val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
-            filePlacementStrategy.place(graph, vertexInfo)
+            FilePlacementStrategy().place(graph, vertexInfo)
         }
     }
 
     private fun arrangeVertexes() {
         currentStage?.apply {
-            strategy.place(width, height, graph.vertexes().values)
+            strategy.place(graph.width, graph.height, graph.vertexes().values)
         }
     }
 
