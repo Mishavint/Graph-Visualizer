@@ -1,7 +1,7 @@
 package visualazer.view
 
 import tornadofx.doubleProperty
-import visualazer.model.Vertex
+import visualazer.model.*
 import java.util.*
 
 class Algorithms(private val graphView: GraphView) {
@@ -62,7 +62,7 @@ class Algorithms(private val graphView: GraphView) {
 
                 pred[w]!!.forEach {
                     shareShortestPaths[it] = (shareShortestPaths[it]!! +
-                            (numOfShortestPaths[it]!!.toDouble()/numOfShortestPaths[w]!!.toDouble())  *
+                            (numOfShortestPaths[it]!!.toDouble() / numOfShortestPaths[w]!!.toDouble()) *
                             (1 + shareShortestPaths[w]!!))
                 }
 
@@ -76,5 +76,10 @@ class Algorithms(private val graphView: GraphView) {
             val normalizedValue = centralityCoefficient[it.key]!! / (vertexes.size * vertexes.size / 2)
             it.value.reBindRadiusProperty(doubleProperty(it.value.radius + 3 * normalizedValue))
         }
+    }
+
+    fun searchCommunities() {
+        val graph = graphView.graph()
+
     }
 }

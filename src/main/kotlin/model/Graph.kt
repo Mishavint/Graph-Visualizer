@@ -1,4 +1,0 @@
-package model
-
-class Graph {
-}
