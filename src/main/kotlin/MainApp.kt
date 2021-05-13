@@ -1,6 +1,7 @@
-import view.*
 import javafx.stage.Stage
 import tornadofx.*
+import visualazer.view.MainView
+import visualazer.view.Styles
 
 class MainApp : App(MainView::class, Styles::class) {
 
