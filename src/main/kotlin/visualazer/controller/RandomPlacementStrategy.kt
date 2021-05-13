@@ -18,8 +18,10 @@ class RandomPlacementStrategy: Controller() {
             return
         }
 
+        val radius = vertexes.first().radius
+
         vertexes.forEach {
-            it.position = rand(width.toInt()) to rand(height.toInt())
+            it.position = rand(width.toInt() - radius.toInt() * 10) to rand(height.toInt() - radius.toInt() * 10)
         }
     }
 }

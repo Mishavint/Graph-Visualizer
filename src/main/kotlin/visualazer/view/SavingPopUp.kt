@@ -16,7 +16,7 @@ class SavingPopUp: Fragment() {
                 button("Save ") {
                     useMaxWidth = true
                     action {
-                        saveGraphToFile(MainView().graph())
+                        GraphIO().writeToFile(MainView().graph(), fileName.get())
                         fileName.value = ""
                         close()
                     }
@@ -29,9 +29,5 @@ class SavingPopUp: Fragment() {
                 }
             }
         }
-    }
-
-    private fun saveGraphToFile(graphView: GraphView) {
-        GraphIO().writeToFile(graphView, fileName.get())
     }
 }

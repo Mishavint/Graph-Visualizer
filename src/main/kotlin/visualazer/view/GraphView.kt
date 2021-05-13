@@ -8,11 +8,11 @@ import tornadofx.add
 import tornadofx.doubleProperty
 import tornadofx.find
 
-class GraphView(private val graph: Graph = UndirectedGraph()): Pane() {
+class GraphView(private var graph: Graph = UndirectedGraph()): Pane() {
     private val dragger = find(VertexDragController::class)
     private val vertexes by lazy {
         graph.vertexes().associateWith {
-            VertexView(it, 0.0, 0.0, doubleProperty(8.0), Color.BLACK)
+            VertexView(it, 0.0, 0.0, doubleProperty(5.0), Color.BLACK)
         }.toMutableMap()
     }
 
@@ -26,8 +26,13 @@ class GraphView(private val graph: Graph = UndirectedGraph()): Pane() {
         }.toMutableMap()
     }
 
+    fun graph() = graph
     fun vertexes(): Map<Vertex, VertexView> = vertexes
     fun edges(): Map<Edge, EdgeView> = edges
+
+    fun setGraph(graph: Graph) {
+        this.graph = graph
+    }
 
     init {
         vertexes().forEach { v ->

@@ -7,14 +7,14 @@ import javafx.stage.FileChooser
 import javafx.stage.StageStyle
 import tornadofx.*
 import visualazer.GraphIO
+import visualazer.controller.FilePlacementStrategy
 import java.io.File
 
 class MainView : View("Graph visualazer.visualazer.view.view") {
     private val fileName = SimpleStringProperty()
     private val graph = GraphView(props.SAMPLE_GRAPH)
     private val strategy: RandomPlacementStrategy by inject()
-
-    fun graph() = graph
+    private val reStrategy: FilePlacementStrategy by inject()
 
     override val root = borderpane {
 
@@ -36,6 +36,7 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
                                         )
                                     )
                                 ).checkFileName()
+                                drawNewGraph()
                             }
                         }
                         separator()
@@ -65,6 +66,7 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
                     item("Reset") {
                         action {
                             fileName.value = ""
+                            arrangeVertexes()
                             modalStage?.close()
                         }
                     }
@@ -90,14 +92,16 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
                         tooltip("Leiden algorithm")
                         useMaxWidth = true
                         action {
-                            openInternalWindow<SavingPopUp>()
+
                         }
                     }
 
                     button("Search main vertices") {
-//                    TODO("Подумать, что сюда можно вписать")
-                        tooltip("")
+                        tooltip("Searching betweenness centrality")
                         useMaxWidth = true
+                        action {
+                            Algorithms(graph).mainVertexes()
+                        }
                     }
                 }
                 bottom = hbox {
@@ -131,14 +135,20 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
         arrangeVertexes()
     }
 
+    fun graph() = graph
+
+    private fun drawNewGraph() {
+        val filePlacementStrategy = FilePlacementStrategy()
+        currentStage?.apply {
+            val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
+            filePlacementStrategy.place(graph, vertexInfo)
+        }
+    }
+
     private fun arrangeVertexes() {
         currentStage?.apply {
             strategy.place(width, height, graph.vertexes().values)
         }
-    }
-
-    private fun changeGraph() {
-
     }
 
     private fun List<File>.checkFileName(): String? {

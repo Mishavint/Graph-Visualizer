@@ -14,6 +14,7 @@ interface Edge {
 interface Graph {
     fun vertexes(): MutableCollection<Vertex>
     fun edges(): MutableCollection<Edge>
+    fun listOfAdjacency(): HashMap<Vertex, ArrayList<Vertex>>
 
     fun addVertex(v: String): Vertex
     fun addEdge(u: String, v: String, e: String): Edge

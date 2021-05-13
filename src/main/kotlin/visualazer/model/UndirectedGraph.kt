@@ -9,6 +9,8 @@ internal class UndirectedGraph: Graph {
 
     override fun edges(): MutableCollection<Edge> = edges.values
 
+    override fun listOfAdjacency() = listOfAdjacency
+
     override fun addVertex(v: String): Vertex {
         val u = UndirectedVertex(v)
         if (!listOfAdjacency.containsKey(u))
