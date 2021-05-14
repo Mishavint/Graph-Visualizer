@@ -2,7 +2,7 @@ package visualizer.controller
 
 import javafx.scene.paint.Color
 import tornadofx.Controller
-import visualazer.view.VertexView
+import visualizer.view.VertexView
 
 class VertexController : Controller() {
     fun setBlackColor(vertices : Collection<VertexView>) {
