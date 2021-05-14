@@ -10,6 +10,7 @@ import javafx.stage.StageStyle
 import tornadofx.*
 import visualazer.view.Algorithms
 import visualizer.controller.CircularPlacementStrategy
+import visualizer.controller.FA2Controller
 import java.io.File
 
 class MainView : View("Graph visualizer") {
@@ -99,7 +100,7 @@ class MainView : View("Graph visualizer") {
                         tooltip("Leiden algorithm")
                         useMaxWidth = true
                         action {
-
+                            Algorithms(graph).searchCommunities()
                         }
                     }
 
@@ -148,6 +149,21 @@ class MainView : View("Graph visualizer") {
                         action {
                             GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
                             arrangeInCircle()
+                        }
+                    }
+
+                    button("Init FA2") {
+                        tooltip("ALWAYS used right after reading/creating graph")
+                        useMaxWidth = true
+                        action {
+                            initFA2()
+                        }
+                    }
+
+                    button("RUN/STOP FA2") {
+                        useMaxWidth = true
+                        action {
+                            fa2.runFA()
                         }
                     }
                 }
@@ -201,6 +217,11 @@ class MainView : View("Graph visualizer") {
             0 -> null
             else -> this[0].path
         }
+    }
+
+    private lateinit var fa2: FA2Controller
+    private fun initFA2() {
+        fa2 = FA2Controller(graph, 100.0)
     }
 }
 

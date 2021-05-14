@@ -11,7 +11,7 @@ class ForceAtlas2(var graph: GraphView) {
 
     var jitterTolerance = 1.0
 
-    var scalingRatio = 200.0 // Important thing
+    var scalingRatio = 100.0 // Important thing
     var strongGravityMode = false
     var gravity = 1.0
 
@@ -19,7 +19,7 @@ class ForceAtlas2(var graph: GraphView) {
     var outboundAttCompensation = false // Do not change (works)
     var edgeWeightInfluence = 1.0 // Do not change (mixed)
 
-    var barnesHutOptimize =  false
+    var barnesHutOptimize =  true
     var barnesHutTheta = 1.0
 
     inner class Node {
