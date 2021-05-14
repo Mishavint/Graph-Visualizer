@@ -13,7 +13,7 @@ import java.io.File
 
 class MainView : View("Graph visualizer") {
     private val fileName = SimpleStringProperty()
-    private var graph = GraphView(props.SAMPLE_GRAPH)
+    private var graph = GraphView()
     private val strategy: RandomPlacementStrategy by inject()
 
     override val root = borderpane {
@@ -110,13 +110,13 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-//                    button("Graph0 (0.7K)") {
-//                        useMaxWidth = true
-//                        action {
-//                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
-//                            arrangeInCircle()
-//                        }
-//                    }
+                    button("Graph0 (0.7K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
+                            arrangeInCircle()
+                        }
+                    }
 
                     button("Graph1 (0.9K)") {
                         useMaxWidth = true
