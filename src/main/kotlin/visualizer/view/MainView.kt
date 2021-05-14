@@ -151,7 +151,7 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-                    button("Graph5 (0.7K)") {
+                    button("Graph5 (62)") {
                         useMaxWidth = true
                         action {
                             GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
