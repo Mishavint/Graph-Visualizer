@@ -110,7 +110,15 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-                    button("Graph1 (1K)") {
+//                    button("Graph0 (0.7K)") {
+//                        useMaxWidth = true
+//                        action {
+//                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
+//                            arrangeInCircle()
+//                        }
+//                    }
+
+                    button("Graph1 (0.9K)") {
                         useMaxWidth = true
                         action {
                             GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
@@ -122,6 +130,14 @@ class MainView : View("Graph visualizer") {
                         useMaxWidth = true
                         action {
                             GraphIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph3 (7K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
                             arrangeInCircle()
                         }
                     }
