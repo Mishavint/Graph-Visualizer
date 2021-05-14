@@ -89,7 +89,7 @@ class Algorithms(private val graphView: GraphView) {
         Random.nextInt(0, 255)
     )
 
-    fun searchCommunities(resolution: Double = 0.2) {
+    fun communitiesDetection(resolution: Double = 0.14) {
         val graph = graphView.graph()
         val fileBeforeLeidenAlg = "tmp/fileBeforeLeidenAlg.csv"
         val fileAfterLeidenAlg = "tmp/fileAfterLeidenAlg.csv"
