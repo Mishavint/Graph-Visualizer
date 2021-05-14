@@ -143,10 +143,18 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-                    button("Graph3 (34)") {
+                    button("Graph4 (34)") {
                         useMaxWidth = true
                         action {
                             GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph5 (62)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
                             arrangeInCircle()
                         }
                     }
