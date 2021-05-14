@@ -89,7 +89,7 @@ class Algorithms(private val graphView: GraphView) {
         Random.nextInt(0, 255)
     )
 
-    fun searchCommunities(resolution : Double = 0.2) {
+    fun searchCommunities(resolution: Double = 0.2) {
         val graph = graphView.graph()
         val fileBeforeLeidenAlg = "tmp/fileBeforeLeidenAlg.csv"
         val fileAfterLeidenAlg = "tmp/fileAfterLeidenAlg.csv"
@@ -105,7 +105,9 @@ class Algorithms(private val graphView: GraphView) {
         val edges = graph.edges()
         csvWriter().open(fileBeforeLeidenAlg) {
             edges.forEach {
-                writeRow("${listOfVertices[it.vertexes.first.element]}\t${listOfVertices[it.vertexes.second.element]}")
+                if (countedVertices[it.vertexes.first] != false || countedVertices[it.vertexes.second] != false)
+                    writeRow("${listOfVertices[it.vertexes.first.element]}\t${listOfVertices[it.vertexes.second.element]}")
+
                 countedVertices[it.vertexes.first] = true
                 countedVertices[it.vertexes.second] = true
             }
@@ -115,11 +117,11 @@ class Algorithms(private val graphView: GraphView) {
         RunNetworkClustering.main(args)
 
         val mapOfColors: MutableMap<Int, Color> = mutableMapOf()
-        val includedColors : MutableMap<Int, Boolean> = mutableMapOf()
+        val includedColors: MutableMap<Int, Boolean> = mutableMapOf()
 
         count = 0
 
-        val mapOfColorsToVertices : MutableMap<Int, Color> = mutableMapOf()
+        val mapOfColorsToVertices: MutableMap<Int, Color> = mutableMapOf()
 
         csvReader().open(fileAfterLeidenAlg) {
             var line: List<String>? = readNext()
@@ -130,7 +132,7 @@ class Algorithms(private val graphView: GraphView) {
 
                 val indexForMap = digits[1].toInt()
 
-                if( includedColors[indexForMap] != true ){
+                if (includedColors[indexForMap] != true) {
                     includedColors[indexForMap] = true
                     mapOfColors[indexForMap] = randomColor()
                 }
@@ -144,8 +146,8 @@ class Algorithms(private val graphView: GraphView) {
         count = 0
 
         graphView.vertexes().values.forEach {
-            if(countedVertices[it.vertex] == true )
-            it.color = mapOfColorsToVertices[count++]!!
+            if (countedVertices[it.vertex] == true)
+                it.color = mapOfColorsToVertices[count++]!!
         }
     }
 }
