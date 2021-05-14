@@ -13,7 +13,7 @@ import java.io.File
 
 class MainView : View("Graph visualizer") {
     private val fileName = SimpleStringProperty()
-    private var graph = GraphView(props.SAMPLE_GRAPH)
+    private var graph = GraphView()
     private val strategy: RandomPlacementStrategy by inject()
 
     override val root = borderpane {
