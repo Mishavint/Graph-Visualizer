@@ -1,8 +1,13 @@
-package visualizer.view
+package visualazer.view
 
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import tornadofx.doubleProperty
-import visualizer.model.Vertex
+import visualazer.model.*
 import java.util.*
+import nl.cwts.networkanalysis.run.RunNetworkClustering
+import javafx.scene.paint.Color
+import kotlin.random.Random
 
 class Algorithms(private val graphView: GraphView) {
 
@@ -62,7 +67,7 @@ class Algorithms(private val graphView: GraphView) {
 
                 pred[w]!!.forEach {
                     shareShortestPaths[it] = (shareShortestPaths[it]!! +
-                            (numOfShortestPaths[it]!!.toDouble()/numOfShortestPaths[w]!!.toDouble())  *
+                            (numOfShortestPaths[it]!!.toDouble() / numOfShortestPaths[w]!!.toDouble()) *
                             (1 + shareShortestPaths[w]!!))
                 }
 
@@ -71,9 +76,76 @@ class Algorithms(private val graphView: GraphView) {
                 }
             }
         }
+        print(centralityCoefficient)
         graphView.vertexes().forEach {
             val normalizedValue = centralityCoefficient[it.key]!! / (vertexes.size * vertexes.size / 2)
-            it.value.reBindRadiusProperty(doubleProperty(it.value.radius + 8 * normalizedValue))
+            it.value.reBindRadiusProperty(doubleProperty(it.value.radius + 3 * normalizedValue))
+        }
+    }
+
+    private fun randomColor(): Color = Color.rgb(
+        Random.nextInt(0, 255),
+        Random.nextInt(0, 255),
+        Random.nextInt(0, 255)
+    )
+
+    fun searchCommunities(resolution : Double = 0.2) {
+        val graph = graphView.graph()
+        val fileBeforeLeidenAlg = "tmp/fileBeforeLeidenAlg.csv"
+        val fileAfterLeidenAlg = "tmp/fileAfterLeidenAlg.csv"
+
+        val listOfVertices: MutableMap<String, Int> = mutableMapOf()
+        val countedVertices: MutableMap<Vertex, Boolean> = mutableMapOf()
+        var count = 0
+        graph.vertexes().forEach {
+            countedVertices[it] = false
+            listOfVertices[it.element] = count++
+        }
+
+        val edges = graph.edges()
+        csvWriter().open(fileBeforeLeidenAlg) {
+            edges.forEach {
+                writeRow("${listOfVertices[it.vertexes.first.element]}\t${listOfVertices[it.vertexes.second.element]}")
+                countedVertices[it.vertexes.first] = true
+                countedVertices[it.vertexes.second] = true
+            }
+        }
+
+        val args = arrayOf("-r", "$resolution", "-o", fileAfterLeidenAlg, fileBeforeLeidenAlg)
+        RunNetworkClustering.main(args)
+
+        val mapOfColors: MutableMap<Int, Color> = mutableMapOf()
+        val includedColors : MutableMap<Int, Boolean> = mutableMapOf()
+
+        count = 0
+
+        val mapOfColorsToVertices : MutableMap<Int, Color> = mutableMapOf()
+
+        csvReader().open(fileAfterLeidenAlg) {
+            var line: List<String>? = readNext()
+            while (line != null) {
+                val column = line[0]
+
+                val digits = column.split("\t")
+
+                val indexForMap = digits[1].toInt()
+
+                if( includedColors[indexForMap] != true ){
+                    includedColors[indexForMap] = true
+                    mapOfColors[indexForMap] = randomColor()
+                }
+
+                mapOfColorsToVertices[count++] = mapOfColors[indexForMap]!!
+
+                line = readNext()
+            }
+        }
+
+        count = 0
+
+        graphView.vertexes().values.forEach {
+            if(countedVertices[it.vertex] == true )
+            it.color = mapOfColorsToVertices[count++]!!
         }
     }
 }
