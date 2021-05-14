@@ -8,7 +8,6 @@ import javafx.geometry.Pos
 import javafx.stage.FileChooser
 import javafx.stage.StageStyle
 import tornadofx.*
-import visualazer.view.Algorithms
 import visualizer.controller.CircularPlacementStrategy
 import visualizer.controller.FA2Controller
 import java.io.File
@@ -144,10 +143,18 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-                    button("Graph3 (34)") {
+                    button("Graph4 (34)") {
                         useMaxWidth = true
                         action {
                             GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph5 (0.7K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
                             arrangeInCircle()
                         }
                     }
