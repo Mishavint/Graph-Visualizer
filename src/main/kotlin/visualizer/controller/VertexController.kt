@@ -10,4 +10,10 @@ class VertexController : Controller() {
             it.color = Color.BLACK
         }
     }
+
+    fun increaseRadius(vertices : Collection<VertexView>) {
+        vertices.forEach {
+
+        }
+    }
 }

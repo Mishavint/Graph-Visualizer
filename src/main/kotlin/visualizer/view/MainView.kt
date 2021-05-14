@@ -1,26 +1,27 @@
 package visualizer.view
 
-import visualizer.controller.RandomPlacementStrategy
 import visualizer.GraphIO
-import visualizer.controller.FilePlacementStrategy
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
+import javafx.scene.control.TextField
+import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import javafx.stage.StageStyle
 import tornadofx.*
-import visualizer.controller.CircularPlacementStrategy
-import visualizer.controller.FA2Controller
+import visualizer.controller.*
 import java.io.File
 
 class MainView : View("Graph visualizer") {
-    private val fileName = SimpleStringProperty()
+    private val fileName = SimpleStringProperty("DefaultName")
     private var graph = GraphView()
     private val strategy: RandomPlacementStrategy by inject()
+    private val vertexController = VertexController()
+    private val scrollController = ScrollController()
 
     override val root = borderpane {
 
-        top = hbox {
-            menubar {
+        top = borderpane {
+            left = menubar {
                 menu("Settings") {
                     menu("File") {
                         item("Save to file") {
@@ -85,79 +86,39 @@ class MainView : View("Graph visualizer") {
                 }
             }
             addClass(Styles.boxBordersForMenu)
+            center = hbox {
+                alignment = Pos.BOTTOM_CENTER
+                label(fileName) {
+                    font = Styles.InterMediumFont
+                }
+            }
         }
 
         left = borderpane {
+            addClass(Styles.boxBorders)
 
-            center = borderpane {
-                addClass(Styles.boxBorders)
+            style {
+                baseColor = Color.LIGHTGREY
+            }
 
-                center = vbox {
-                    spacing = 10.0
-                    alignment = Pos.CENTER_LEFT
-                    button("Search communities") {
-                        tooltip("Leiden algorithm")
-                        useMaxWidth = true
-                        action {
-                            Algorithms(graph).searchCommunities()
+            center = vbox {
+                titledpane("Community detection") {
+                    expandedProperty().set(false)
+
+                    label("Resolution:")
+
+                    textfield("0.1").also {
+                        add(it)
+                        button("Start Leiden algorithm") {
+                            action {
+                                Algorithms(graph).communitiesDetection(it.text.toDouble())
+                            }
                         }
                     }
+                }
 
-                    button("Search main vertices") {
-                        tooltip("Searching betweenness centrality")
-                        useMaxWidth = true
-                        action {
-                            Algorithms(graph).mainVertexes()
-                        }
-                    }
-
-                    button("Graph0 (0.7K)") {
-                        useMaxWidth = true
-                        action {
-                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
-                            arrangeInCircle()
-                        }
-                    }
-
-                    button("Graph1 (0.9K)") {
-                        useMaxWidth = true
-                        action {
-                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
-                            arrangeInCircle()
-                        }
-                    }
-
-                    button("Graph2 (5K)") {
-                        useMaxWidth = true
-                        action {
-                            GraphIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
-                            arrangeInCircle()
-                        }
-                    }
-
-                    button("Graph3 (7K)") {
-                        useMaxWidth = true
-                        action {
-                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
-                            arrangeInCircle()
-                        }
-                    }
-
-                    button("Graph4 (34)") {
-                        useMaxWidth = true
-                        action {
-                            GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
-                            arrangeInCircle()
-                        }
-                    }
-
-                    button("Graph5 (62)") {
-                        useMaxWidth = true
-                        action {
-                            GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
-                            arrangeInCircle()
-                        }
-                    }
+                titledpane("Force Atlas 2") {
+                    expandedProperty().set(false)
 
                     button("Init FA2") {
                         tooltip("ALWAYS used right after reading/creating graph")
@@ -172,32 +133,94 @@ class MainView : View("Graph visualizer") {
                         action {
                             fa2.runFA()
                         }
+                        shortcut("P")
                     }
                 }
-                bottom = hbox {
-                    spacing = 2.0
 
-                    button("Full Screen") {
-                        tooltip(
-                            "${if (primaryStage.isFullScreen) "close Full screen" else "enter Full screen"}\n" +
-                                    "Or just press f11 button"
-                        )
+                titledpane("Appearance") {
+                    expandedProperty().set(false)
+
+                    button("Set black color to vertices") {
                         action {
-                            with(primaryStage) { isFullScreen = !isFullScreen }
+                            vertexController.setBlackColor(graph.vertexes().values)
                         }
-                        shortcut("F11")
                     }
+                }
 
-                    button("Kittens") {
+                titledpane("Centrality") {
+                    expandedProperty().set(false)
+
+                    button("Centrality") {
+                        tooltip("Searching betweenness centrality")
+                        useMaxWidth = true
                         action {
-                            find<Kittens>().openModal(stageStyle = StageStyle.UTILITY)
+                            Algorithms(graph).mainVertexes()
                         }
+                    }
+                }
+
+                button("Graph0 (0.7K)") {
+                    useMaxWidth = true
+                    action {
+                        GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
+                        arrangeInCircle()
+                    }
+                }
+
+                button("Graph1 (0.9K)") {
+                    useMaxWidth = true
+                    action {
+                        GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
+                        arrangeInCircle()
+                    }
+                }
+
+                button("Graph4 (34)") {
+                    useMaxWidth = true
+                    action {
+                        GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
+                        arrangeInCircle()
+                    }
+                }
+
+                button("Graph5 (62)") {
+                    useMaxWidth = true
+                    action {
+                        GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
+                        arrangeInCircle()
                     }
                 }
             }
-        }
+
+            bottom = hbox {
+                spacing = 2.0
+
+                button("Full Screen") {
+                    tooltip(
+                        "${if (primaryStage.isFullScreen) "close Full screen" else "enter Full screen"}\n" +
+                                "Or just press f11 button"
+                    )
+                    action {
+                        with(primaryStage) { isFullScreen = !isFullScreen }
+                    }
+                    shortcut("F11")
+                }
+
+                button("Kittens") {
+                    action {
+                        find<Kittens>().openModal(stageStyle = StageStyle.UTILITY)
+                    }
+                }
+            }
+            }
+
         center {
             add(graph)
+
+
+            setOnScroll {
+                scrollController.scroll(it, this)
+            }
         }
     }
 
@@ -231,5 +254,3 @@ class MainView : View("Graph visualizer") {
         fa2 = FA2Controller(graph, 100.0)
     }
 }
-
-
