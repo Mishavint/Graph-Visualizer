@@ -1,10 +1,9 @@
-package visualazer.view
+package visualizer.view
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import tornadofx.doubleProperty
 import visualizer.model.*
-import visualizer.view.GraphView
 import java.util.*
 import nl.cwts.networkanalysis.run.RunNetworkClustering
 import javafx.scene.paint.Color
