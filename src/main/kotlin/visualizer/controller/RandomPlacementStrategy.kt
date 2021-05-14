@@ -1,7 +1,8 @@
-package visualazer.controller
+package visualizer.controller
 
+import javafx.scene.paint.Color
 import tornadofx.Controller
-import visualazer.view.VertexView
+import visualizer.view.VertexView
 import java.util.*
 
 class RandomPlacementStrategy: Controller() {
@@ -22,6 +23,7 @@ class RandomPlacementStrategy: Controller() {
 
         vertexes.forEach {
             it.position = rand(width.toInt() - radius.toInt() * 10) to rand(height.toInt() - radius.toInt() * 10)
+            it.color = if (random.nextBoolean()) Color.RED else Color.BLUE
         }
     }
 }

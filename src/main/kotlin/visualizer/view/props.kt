@@ -1,6 +1,6 @@
-package visualazer.view
+package visualizer.view
 
-import visualazer.model.*
+import visualizer.model.*
 import tornadofx.booleanProperty
 import tornadofx.doubleProperty
 

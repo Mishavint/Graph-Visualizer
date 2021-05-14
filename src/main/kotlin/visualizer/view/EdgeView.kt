@@ -1,7 +1,7 @@
-package visualazer.view
+package visualizer.view
 
 import javafx.scene.shape.Line
-import visualazer.model.Edge
+import visualizer.model.Edge
 
 class EdgeView(
     edge: Edge,

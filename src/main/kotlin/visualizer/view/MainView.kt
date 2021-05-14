@@ -12,10 +12,9 @@ import visualizer.controller.CircularPlacementStrategy
 import java.io.File
 
 class MainView : View("Graph visualizer") {
-    private var fileName = SimpleStringProperty()
+    private val fileName = SimpleStringProperty()
     private var graph = GraphView()
     private val strategy: RandomPlacementStrategy by inject()
-    private var resolutionForLeiAlg : Double = 0.2
 
     override val root = borderpane {
 
@@ -107,7 +106,7 @@ class MainView : View("Graph visualizer") {
                         tooltip("Searching betweenness centrality")
                         useMaxWidth = true
                         action {
-                            Algorithms(graph).mainVertexes(resolution)
+                            Algorithms(graph).mainVertexes()
                         }
                     }
 
@@ -187,3 +186,5 @@ class MainView : View("Graph visualizer") {
         }
     }
 }
+
+
