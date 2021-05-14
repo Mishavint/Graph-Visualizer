@@ -8,7 +8,6 @@ import javafx.geometry.Pos
 import javafx.stage.FileChooser
 import javafx.stage.StageStyle
 import tornadofx.*
-import visualazer.view.Algorithms
 import visualizer.controller.CircularPlacementStrategy
 import visualizer.controller.FA2Controller
 import java.io.File
