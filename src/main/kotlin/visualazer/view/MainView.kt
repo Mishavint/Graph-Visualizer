@@ -1,165 +1,182 @@
-package visualazer.view
+package visualizer.view
 
-import visualazer.controller.RandomPlacementStrategy
+import visualizer.controller.RandomPlacementStrategy
+import visualizer.GraphIO
+import visualizer.controller.FilePlacementStrategy
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
-import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import javafx.stage.StageStyle
 import tornadofx.*
-import visualazer.GraphIO
-import visualazer.controller.FilePlacementStrategy
+import visualizer.controller.CircularPlacementStrategy
 import java.io.File
 
-class MainView : View("Graph visualazer.visualazer.view.view") {
-    private val fileName = SimpleStringProperty()
-    private val graph = GraphView(props.SAMPLE_GRAPH)
+class MainView : View("Graph visualizer") {
+    private var fileName = SimpleStringProperty()
+    private var graph = GraphView()
     private val strategy: RandomPlacementStrategy by inject()
-    private val reStrategy: FilePlacementStrategy by inject()
+    private var resolutionForLeiAlg : Double = 0.2
 
     override val root = borderpane {
 
-            left = borderpane {
-                top = hbox {
-                    addClass(Styles.boxBorders)
-                    menubar {
-                        menu("Settings") {
-                            menu("File") {
-                                item("Save to file") {
-                                    action {
-                                        openInternalWindow<SavingPopUp>()
-                                    }
+        top = hbox {
+            menubar {
+                menu("Settings") {
+                    menu("File") {
+                        item("Save to file") {
+                            action {
+                                fileName.value = chooseFile(
+                                    title = "Save to",
+                                    filters = arrayOf(FileChooser.ExtensionFilter("Text files", "*.csv")),
+                                    mode = FileChooserMode.Save
+                                ).checkFileName()
+                                GraphIO().writeToFile(graph, fileName.get())
                             }
-                                item("Read from file") {
-                                    action {
-                                        fileName.value = chooseFile(
-                                            filters = arrayOf(
-                                                FileChooser.ExtensionFilter(
-                                                    "Text files", "*.csv"
-                                                )
-                                            )
-                                        ).checkFileName()
-                                    }
-                                }
-                                separator()
-                                item("Save to SQLite") {
-                                    action {
-
-                                    }
-                                }
-                                item("Read from SQLite") {
-                                    action {
-
-                                    }
-                                }
-                                separator()
-                                item("Save to Neo4j") {
-                                    action {
-
-                                    }
-                                }
-                                item("Read from Neo4j") {
-                                    action {
-
-                                    }
-                                }
+                        }
+                        item("Read from file") {
+                            action {
+                                fileName.value = chooseFile(
+                                    filters = arrayOf(
+                                        FileChooser.ExtensionFilter(
+                                            "Text files", "*.csv"
+                                        )
+                                    )
+                                ).checkFileName()
+                                val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
+                                drawNewGraph(vertexInfo)
                             }
-                            separator()
-                            item("Reset") {
-                                action {
-                                    arrangeVertexes()
-                                    arrangeVertexes()
-                                    modalStage?.close()
-                                }
+                        }
+                        separator()
+                        item("Save to SQLite") {
+                            action {
+
                             }
-                            item("Close") {
-                                action {
-                                    primaryStage.close()
-                                }
+                        }
+                        item("Read from SQLite") {
+                            action {
+
+                            }
+                        }
+                        separator()
+                        item("Save to Neo4j") {
+                            action {
+
+                            }
+                        }
+                        item("Read from Neo4j") {
+                            action {
+
                             }
                         }
                     }
-                }
-                center = borderpane {
-                    addClass(Styles.boxBorders)
-
-                    center = vbox {
-                        spacing = 10.0
-                        alignment = Pos.CENTER_LEFT
-                        button("Search communities") {
-                            tooltip("Leiden algorithm")
-                            useMaxWidth = true
-                            action {
-                                Algorithms(graph).searchCommunities()
-                            }
-                        }
-                        button("Search main vertices") {
-                            tooltip("Searching betweenness centrality")
-                            useMaxWidth = true
-                            action {
-                            Algorithms(graph).mainVertexes()
-                            }
+                    separator()
+                    item("Reset") {
+                        action {
+                            fileName.value = ""
+                            arrangeVertexes()
+                            modalStage?.close()
                         }
                     }
-                    bottom = hbox {
-                        spacing = 2.0
-
-                        button("Full Screen") {
-                            tooltip(
-                                "${if (primaryStage.isFullScreen) "close Full screen" else "enter Full screen"}\n" +
-                                        "Or just press f11 button"
-                            )
-                            action {
-                                with(primaryStage) { isFullScreen = !isFullScreen }
-                            }
-                            shortcut("F11")
-                        }
-
-                        button("Kittens") {
-                            action {
-                                find<Kittens>().openModal(stageStyle = StageStyle.UTILITY)
-                            }
+                    item("Close") {
+                        action {
+                            primaryStage.close()
                         }
                     }
                 }
             }
+            addClass(Styles.boxBordersForMenu)
+        }
 
-        center = borderpane {
-            top = hbox {
-                minHeight = 27.0
-                addClass(Styles.boxBordersForMenu)
-                alignment = Pos.CENTER
-                label(fileName) {
-                    font = Styles.InterMediumFont
-                }
-                style {
-                    borderColor += box(left = Color.GREY , right = Color.WHITE , bottom = Color.BLACK , top = Color.WHITE)
-                }
-            }
-            center = vbox {
+        left = borderpane {
+
+            center = borderpane {
                 addClass(Styles.boxBorders)
-                add(graph)
+
+                center = vbox {
+                    spacing = 10.0
+                    alignment = Pos.CENTER_LEFT
+                    button("Search communities") {
+                        tooltip("Leiden algorithm")
+                        useMaxWidth = true
+                        action {
+
+                        }
+                    }
+
+                    button("Search main vertices") {
+                        tooltip("Searching betweenness centrality")
+                        useMaxWidth = true
+                        action {
+                            Algorithms(graph).mainVertexes(resolution)
+                        }
+                    }
+
+                    button("Graph1 (1K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "soc-wiki-Vote.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph2 (5K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "soc-advogato.edges")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph3 (34)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "soc-karate.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+                }
+                bottom = hbox {
+                    spacing = 2.0
+
+                    button("Full Screen") {
+                        tooltip(
+                            "${if (primaryStage.isFullScreen) "close Full screen" else "enter Full screen"}\n" +
+                                    "Or just press f11 button"
+                        )
+                        action {
+                            with(primaryStage) { isFullScreen = !isFullScreen }
+                        }
+                        shortcut("F11")
+                    }
+
+                    button("Kittens") {
+                        action {
+                            find<Kittens>().openModal(stageStyle = StageStyle.UTILITY)
+                        }
+                    }
+                }
             }
+        }
+        center {
+            add(graph)
         }
     }
 
-    init {
-        arrangeVertexes()
+    private fun arrangeInCircle() {
+        currentStage?.apply {
+            CircularPlacementStrategy().place(graph.width, graph.height, graph.vertexes().values)
+        }
     }
 
-    fun graph() = graph
-
-    private fun drawNewGraph() {
-        val filePlacementStrategy = FilePlacementStrategy()
+    private fun drawNewGraph(vertexInfo: MutableMap<String, GraphIO.VertexInfo>) {
         currentStage?.apply {
-            val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
-            filePlacementStrategy.place(graph, vertexInfo)
+            FilePlacementStrategy().place(graph, vertexInfo)
         }
     }
 
     private fun arrangeVertexes() {
         currentStage?.apply {
-            strategy.place(width, height, graph.vertexes().values)
+            strategy.place(graph.width, graph.height, graph.vertexes().values)
         }
     }
 
@@ -170,5 +187,3 @@ class MainView : View("Graph visualazer.visualazer.view.view") {
         }
     }
 }
-
-

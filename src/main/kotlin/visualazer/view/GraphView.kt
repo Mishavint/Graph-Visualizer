@@ -12,7 +12,7 @@ class GraphView(private var graph: Graph = UndirectedGraph()): Pane() {
     private val dragger = find(VertexDragController::class)
     private val vertexes by lazy {
         graph.vertexes().associateWith {
-            VertexView(it, 0.0, 0.0, doubleProperty(5.0), Color.BLACK)
+            VertexView(it, 0.0, 0.0, doubleProperty(5.0), Color.GREEN)
         }.toMutableMap()
     }
 
