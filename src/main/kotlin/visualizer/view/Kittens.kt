@@ -1,4 +1,4 @@
-package visualazer.view
+package visualizer.view
 
 import tornadofx.*
 

@@ -1,4 +1,4 @@
-package visualazer.model
+package visualizer.model
 
 internal class UndirectedGraph: Graph {
     private val vertexes = hashMapOf<String, Vertex>()
