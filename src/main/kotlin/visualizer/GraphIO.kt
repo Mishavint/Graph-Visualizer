@@ -88,7 +88,7 @@ class GraphIO {
         val graph = UndirectedGraph()
 
         for (i in 1 until lines.size) {
-            val edge = lines[i].split(" ")
+            val edge = lines[i].split(",", " ")
             graph.addVertex(edge[0])
             graph.addVertex(edge[1])
             graph.addEdge(edge[0], edge[1], "${ i * 4000 }")

@@ -111,10 +111,18 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-                    button("Graph1 (1K)") {
+                    button("Graph0 (0.7K)") {
                         useMaxWidth = true
                         action {
-                            GraphIO().readGraphEdges(graph, "soc-wiki-Vote.mtx")
+                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph1 (0.9K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
                             arrangeInCircle()
                         }
                     }
@@ -122,7 +130,15 @@ class MainView : View("Graph visualizer") {
                     button("Graph2 (5K)") {
                         useMaxWidth = true
                         action {
-                            GraphIO().readGraphEdges(graph, "soc-advogato.edges")
+                            GraphIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    button("Graph3 (7K)") {
+                        useMaxWidth = true
+                        action {
+                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
                             arrangeInCircle()
                         }
                     }
@@ -130,7 +146,7 @@ class MainView : View("Graph visualizer") {
                     button("Graph3 (34)") {
                         useMaxWidth = true
                         action {
-                            GraphIO().readGraphEdges(graph, "soc-karate.mtx")
+                            GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
                             arrangeInCircle()
                         }
                     }
