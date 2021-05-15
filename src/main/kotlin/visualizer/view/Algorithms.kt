@@ -102,15 +102,16 @@ class Algorithms(private val graphView: GraphView) {
             listOfVertices[it.element] = count++
         }
 
-        val edges = graph.edges()
         csvWriter().open(fileBeforeLeidenAlg) {
-            edges.forEach {
-                if (countedVertices[it.vertexes.first] != false || countedVertices[it.vertexes.second] != false)
+            graph.edges().forEach {
+                if (it.vertexes.first != it.vertexes.second)
                     writeRow("${listOfVertices[it.vertexes.first.element]}\t${listOfVertices[it.vertexes.second.element]}")
+
 
                 countedVertices[it.vertexes.first] = true
                 countedVertices[it.vertexes.second] = true
             }
+            close()
         }
 
         val args = arrayOf("-r", "$resolution", "-o", fileAfterLeidenAlg, fileBeforeLeidenAlg)

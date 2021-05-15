@@ -3,7 +3,7 @@ package visualizer.view
 import visualizer.GraphIO
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
-import javafx.scene.control.TextField
+import javafx.scene.control.Alert
 import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import javafx.stage.StageStyle
@@ -50,12 +50,32 @@ class MainView : View("Graph visualizer") {
                         separator()
                         item("Save to SQLite") {
                             action {
-
+                                fileName.value = chooseFile(
+                                    filters = arrayOf(
+                                        FileChooser.ExtensionFilter(
+                                            "SQLite", "*.sqlite", "*.sqlite3"
+                                        )
+                                    ),
+                                    mode = FileChooserMode.Save,
+                                ).checkFileName()
+                                fileName.get()?.let { GraphIO().writeToSQLite(graph, it) }
                             }
                         }
                         item("Read from SQLite") {
-                            action {
+                            action  {
+                                fileName.value = chooseFile(
+                                    filters = arrayOf(
+                                        FileChooser.ExtensionFilter(
+                                            "SQLite", "*.sqlite3", "*.sqlite"
+                                        )
+                                    ),
+                                    mode = FileChooserMode.Single
+                                ).checkFileName()
 
+                                fileName.get()?.let {
+                                    val vertexInfo = GraphIO().readFromSQLite(graph, fileName.get())
+                                    drawNewGraph(vertexInfo)
+                                }
                             }
                         }
                         separator()
@@ -111,7 +131,12 @@ class MainView : View("Graph visualizer") {
                         add(it)
                         button("Start Leiden algorithm") {
                             action {
-                                Algorithms(graph).communitiesDetection(it.text.toDouble())
+                                try {
+                                    Algorithms(graph).communitiesDetection(it.text.toDouble())
+                                } catch (ex:java.lang.NumberFormatException) {
+                                    alert(Alert.AlertType.ERROR, "Please enter valid resolution")
+                                    return@action
+                                }
                             }
                         }
                     }
@@ -137,16 +162,6 @@ class MainView : View("Graph visualizer") {
                     }
                 }
 
-                titledpane("Appearance") {
-                    expandedProperty().set(false)
-
-                    button("Set black color to vertices") {
-                        action {
-                            vertexController.setBlackColor(graph.vertexes().values)
-                        }
-                    }
-                }
-
                 titledpane("Centrality") {
                     expandedProperty().set(false)
 
@@ -158,6 +173,16 @@ class MainView : View("Graph visualizer") {
                         }
                     }
                 }
+                titledpane("Appearance") {
+                    expandedProperty().set(false)
+
+                    button("Set black color to vertices") {
+                        action {
+                            vertexController.setBlackColor(graph.vertexes().values)
+                        }
+                    }
+                }
+
 
                 button("Graph0 (0.7K)") {
                     useMaxWidth = true
@@ -190,6 +215,22 @@ class MainView : View("Graph visualizer") {
                         arrangeInCircle()
                     }
                 }
+
+                button("Graph2 (5K)") {
+                    useMaxWidth = true
+                    action {
+                        GraphIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
+                        arrangeInCircle()
+                    }
+                }
+
+                button("Graph3 (7K)") {
+                    useMaxWidth = true
+                    action {
+                        GraphIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
+                        arrangeInCircle()
+                    }
+                }
             }
 
             bottom = hbox {
@@ -212,11 +253,10 @@ class MainView : View("Graph visualizer") {
                     }
                 }
             }
-            }
+        }
 
         center {
             add(graph)
-
 
             setOnScroll {
                 scrollController.scroll(it, this)
