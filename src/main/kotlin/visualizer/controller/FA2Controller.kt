@@ -1,27 +1,29 @@
 package visualizer.controller
 
-import javafx.concurrent.ScheduledService
-import javafx.concurrent.Task
-import javafx.util.Duration
+import javafx.animation.AnimationTimer
 
 import visualizer.model.ForceAtlas2
 import visualizer.view.GraphView
 
-class FA2Controller(var graph: GraphView, private val millis: Double = 80.0) {
-    private val fa2 = ForceAtlas2(graph)
-    private var tm = TaskManager(millis)
+class FA2Controller : AnimationTimer() {
+    private lateinit var fa2:ForceAtlas2
     private var status = false
 
-    fun runFA() {
+    override fun handle(now: Long) {
+        fa2.runAlgo()
+    }
+
+    fun runFA(graph: GraphView): Boolean {
         if (!status) {
-            tm = TaskManager(millis)
-            tm.start()
+            fa2 = ForceAtlas2(graph)
+            this.start()
+            status = !status
+        } else {
+            this.stop()
             status = !status
         }
-        else {
-            tm.cancel()
-            status = !status
-        }
+
+        return status
     }
 
     fun speed(speed: Double) {
@@ -54,19 +56,5 @@ class FA2Controller(var graph: GraphView, private val millis: Double = 80.0) {
 
     fun barnesHutTheta(barnesHutTheta: Double) {
         fa2.barnesHutTheta = barnesHutTheta
-    }
-
-    private inner class TaskManager(millis: Double): ScheduledService<Unit>() {
-        init {
-            period = Duration(millis)
-        }
-
-        override fun createTask(): Task<Unit> = IterationTask()
-
-        private inner class IterationTask : Task<Unit>() {
-            override fun call() {
-                fa2.runAlgo()
-            }
-        }
     }
 }
