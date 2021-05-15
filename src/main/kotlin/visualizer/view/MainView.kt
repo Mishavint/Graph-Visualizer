@@ -15,6 +15,7 @@ class MainView : View("Graph visualizer") {
     private val fileName = SimpleStringProperty("DefaultName")
     private var graph = GraphView()
     private val strategy: RandomPlacementStrategy by inject()
+    private val fa2 = FA2Controller()
     private val vertexController = VertexController()
     private val scrollController = ScrollController()
 
@@ -147,18 +148,11 @@ class MainView : View("Graph visualizer") {
                 titledpane("Force Atlas 2") {
                     expandedProperty().set(false)
 
-                    button("Init FA2") {
-                        tooltip("ALWAYS used right after reading/creating graph")
+                    button("Run") {
                         useMaxWidth = true
                         action {
-                            initFA2()
-                        }
-                    }
-
-                    button("RUN/STOP FA2") {
-                        useMaxWidth = true
-                        action {
-                            fa2.runFA()
+                            text = if(fa2.runFA(graph)) "Stop"
+                            else "Run"
                         }
                         shortcut("P")
                     }
@@ -289,10 +283,5 @@ class MainView : View("Graph visualizer") {
             0 -> null
             else -> this[0].path
         }
-    }
-
-    private lateinit var fa2: FA2Controller
-    private fun initFA2() {
-        fa2 = FA2Controller(graph, 100.0)
     }
 }
