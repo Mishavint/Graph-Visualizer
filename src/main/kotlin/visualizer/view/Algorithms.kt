@@ -96,7 +96,7 @@ class Algorithms(private val graphView: GraphView) {
       
         log.info("Communities detection was started")
       
-        if( graphView.vertexes().isEmpty() {
+        if( graphView.vertexes().isEmpty() ) {
          log.info("Graph is empty")
           return
         }
