@@ -15,14 +15,14 @@ class VertexController : Controller() {
     fun increaseRadius(vertices : Collection<VertexView>) {
         vertices.forEach {
             val newRadius = SimpleDoubleProperty(it.radius * 1.05 )
-            it.reBindRadiusProperty(newRadius)
+            it.rebindRadiusProperty(newRadius)
         }
     }
 
     fun decreaseRadius(vertices: Collection<VertexView>) {
         vertices.forEach {
             val newRadius = SimpleDoubleProperty(it.radius / 1.05 )
-            it.reBindRadiusProperty(newRadius)
+            it.rebindRadiusProperty(newRadius)
         }
     }
 }

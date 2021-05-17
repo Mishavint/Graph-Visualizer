@@ -100,7 +100,7 @@ class MainView : View("Graph visualizer") {
                     item("Reset") {
                         action {
                             fileName.value = ""
-                            arrangeVertexes()
+                            arrangeVertices()
                             modalStage?.close()
                         }
                     }
@@ -218,13 +218,13 @@ class MainView : View("Graph visualizer") {
 
                     button("Increase radius") {
                         action {
-                            vertexController.increaseRadius(graph.vertexes().values)
+                            vertexController.increaseRadius(graph.vertices().values)
                         }
                     }
 
                     button("Decrease radius") {
                         action {
-                            vertexController.decreaseRadius(graph.vertexes().values)
+                            vertexController.decreaseRadius(graph.vertices().values)
                         }
                     }
                 }
@@ -328,7 +328,7 @@ class MainView : View("Graph visualizer") {
         }
     }
 
-    private fun arrangeVertexes() {
+    private fun arrangeVertices() {
         currentStage?.apply {
             strategy.place(graph.width, graph.height, graph.vertices().values)
         }

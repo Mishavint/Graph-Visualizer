@@ -15,26 +15,26 @@ class Algorithms(private val graphView: GraphView) {
     fun mainVertices(coefficient: Double) {
         log.info("Searching of centrality started")
         val lstAdj = graphView.graph().listOfAdjacency()
-        val vertexes = graphView.graph().vertices()
+        val vertices = graphView.graph().vertices()
 
         val queue: Queue<Vertex> = LinkedList()
         val stack = Stack<Vertex>()
 
-        val centralityCoefficient = vertexes.associateWith {
+        val centralityCoefficient = vertices.associateWith {
             0.0
         }.toMutableMap()
 
-        vertexes.forEach { s ->
+        vertices.forEach { s ->
 
-            val pred = vertexes.associateWith {
+            val pred = vertices.associateWith {
                 mutableListOf<Vertex>()
             }.toMutableMap()
 
-            val dist = vertexes.associateWith {
+            val dist = vertices.associateWith {
                 Long.MAX_VALUE
             }.toMutableMap()
 
-            val numOfShortestPaths = vertexes.associateWith {
+            val numOfShortestPaths = vertices.associateWith {
                 0
             }.toMutableMap()
 
@@ -60,7 +60,7 @@ class Algorithms(private val graphView: GraphView) {
             }
 
 
-            val shareShortestPaths = vertexes.associateWith {
+            val shareShortestPaths = vertices.associateWith {
                 0.0
             }.toMutableMap()
 
@@ -79,7 +79,7 @@ class Algorithms(private val graphView: GraphView) {
             }
         }
         graphView.vertices().forEach {
-            val normalizedValue = centralityCoefficient[it.key]!! / (vertexes.size * vertexes.size / 2)
+            val normalizedValue = centralityCoefficient[it.key]!! / (vertices.size * vertices.size / 2)
             it.value.rebindRadiusProperty(doubleProperty(it.value.radius + coefficient * normalizedValue))
         }
         log.info("Searching of centrality was finished")
@@ -103,7 +103,7 @@ class Algorithms(private val graphView: GraphView) {
       
         log.info("Communities detection was started")
       
-        if( graphView.vertexes().isEmpty() ) {
+        if( graphView.vertices().isEmpty() ) {
          log.info("Graph is empty")
           return
         }
