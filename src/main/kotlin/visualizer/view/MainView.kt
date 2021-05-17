@@ -28,6 +28,7 @@ class MainView : View("Graph visualizer") {
                     menu("File") {
                         item("Save to file") {
                             action {
+                                fa2.stop()
                                 log.info("Save button was clicked")
                                 fileName.value = chooseFile(
                                     title = "Save to",
@@ -54,6 +55,7 @@ class MainView : View("Graph visualizer") {
                         separator()
                         item("Save to SQLite") {
                             action {
+                                fa2.stop()
                                 log.info("Button \"Save to SQLite was clicked\"")
                                 fileName.value = chooseFile(
                                     filters = arrayOf(
@@ -87,12 +89,15 @@ class MainView : View("Graph visualizer") {
                         separator()
                         item("Save to Neo4j") {
                             action {
+                                GraphIO().writeToNeo4j(graph)
 
+                                fa2.stop()
                             }
                         }
                         item("Read from Neo4j") {
                             action {
-
+                                val vertexInfo = GraphIO().readFromNeo4j(graph)
+                                drawNewGraph(vertexInfo)
                             }
                         }
                     }
@@ -154,14 +159,139 @@ class MainView : View("Graph visualizer") {
                 titledpane("Force Atlas 2") {
                     expandedProperty().set(false)
 
-                    button("Run") {
+                    togglebutton("Run", null, false) {
                         useMaxWidth = true
                         action {
-                            log.info("Button for start FA2 was clicked")
-                            text = if(fa2.runFA(graph)) "Stop"
+                            text = if(fa2.runFA()) "Stop"
                             else "Run"
                         }
-                        shortcut("P")
+                    }
+
+                    button("Apply Settings") {
+                        useMaxWidth = true
+                        action {
+                            fa2.applySettings()
+                        }
+                    }
+
+                    titledpane("Settings") {
+                        expandedProperty().set(false)
+
+                        togglebutton("Barnes Hut Optimization", null, false) {
+                            useMaxWidth = true
+                            action {
+                                fa2.barnesHutOptimize(!isDisabled)
+                            }
+                        }
+
+                        togglebutton("Strong Gravity", null, false) {
+                            useMaxWidth = true
+                            action {
+                                fa2.strongGravityMode(!isDisabled)
+                            }
+                        }
+
+                        label("Speed")
+                        textfield("1.0").also {
+                            add(it)
+                            button("set") {
+                                action {
+                                    try {
+                                        if (it.text.toDouble() < 0.0)
+                                            throw java.lang.NumberFormatException()
+                                        fa2.speed(it.text.toDouble())
+                                    } catch (ex: java.lang.NumberFormatException) {
+                                        alert(Alert.AlertType.ERROR, "Please enter valid value")
+                                        return@action
+                                    }
+                                }
+                            }
+                        }
+
+                        label("Speed Efficiency")
+                        textfield("1.0").also {
+                            add(it)
+                            button("set") {
+                                action {
+                                    try {
+                                        if (it.text.toDouble() < 0.0)
+                                            throw java.lang.NumberFormatException()
+                                        fa2.speedEfficiency(it.text.toDouble())
+                                    } catch (ex: java.lang.NumberFormatException) {
+                                        alert(Alert.AlertType.ERROR, "Please enter valid value")
+                                        return@action
+                                    }
+                                }
+                            }
+                        }
+
+                        label("Jitter Tolerance")
+                        textfield("1.0").also {
+                            add(it)
+                            button("set") {
+                                action {
+                                    try {
+                                        if (it.text.toDouble() < 0.0)
+                                            throw java.lang.NumberFormatException()
+                                        fa2.jitterTolerance(it.text.toDouble())
+                                    } catch (ex: java.lang.NumberFormatException) {
+                                        alert(Alert.AlertType.ERROR, "Please enter valid value")
+                                        return@action
+                                    }
+                                }
+                            }
+                        }
+
+                        label("Scaling Ratio")
+                        textfield("100.0").also {
+                            add(it)
+                            button("set") {
+                                action {
+                                    try {
+                                        if (it.text.toDouble() < 0.0)
+                                            throw java.lang.NumberFormatException()
+                                        fa2.scalingRatio(it.text.toDouble())
+                                    } catch (ex: java.lang.NumberFormatException) {
+                                        alert(Alert.AlertType.ERROR, "Please enter valid value")
+                                        return@action
+                                    }
+                                }
+                            }
+                        }
+
+                        label("Gravity")
+                        textfield("1.0").also {
+                            add(it)
+                            button("set") {
+                                action {
+                                    try {
+                                        if (it.text.toDouble() < 0.0)
+                                            throw java.lang.NumberFormatException()
+                                        fa2.gravity(it.text.toDouble())
+                                    } catch (ex: java.lang.NumberFormatException) {
+                                        alert(Alert.AlertType.ERROR, "Please enter valid value")
+                                        return@action
+                                    }
+                                }
+                            }
+                        }
+
+                        label("Barnes Hut Theta")
+                        textfield("1.0").also {
+                            add(it)
+                            button("set") {
+                                action {
+                                    try {
+                                        if (it.text.toDouble() < 0.0)
+                                            throw java.lang.NumberFormatException()
+                                        fa2.barnesHutTheta(it.text.toDouble())
+                                    } catch (ex: java.lang.NumberFormatException) {
+                                        alert(Alert.AlertType.ERROR, "Please enter valid value")
+                                        return@action
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -320,12 +450,18 @@ class MainView : View("Graph visualizer") {
         currentStage?.apply {
             CircularPlacementStrategy().place(graph.width, graph.height, graph.vertices().values)
         }
+
+        fa2.stop()
+        fa2.prepareFA2(graph)
     }
 
     private fun drawNewGraph(vertexInfo: MutableMap<String, GraphIO.VertexInfo>) {
         currentStage?.apply {
             FilePlacementStrategy().place(graph, vertexInfo)
         }
+
+        fa2.stop()
+        fa2.prepareFA2(graph)
     }
 
     private fun arrangeVertices() {
