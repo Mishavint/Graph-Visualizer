@@ -1,6 +1,7 @@
 package visualizer.controller
 
 import javafx.animation.AnimationTimer
+import tornadofx.FX.Companion.log
 
 import visualizer.model.ForceAtlas2
 import visualizer.view.GraphView
@@ -14,6 +15,7 @@ class FA2Controller : AnimationTimer() {
     }
 
     fun runFA(graph: GraphView): Boolean {
+        log.info("FA2 was started")
         if (!status) {
             fa2 = ForceAtlas2(graph)
             this.start()
@@ -22,7 +24,6 @@ class FA2Controller : AnimationTimer() {
             this.stop()
             status = !status
         }
-
         return status
     }
 

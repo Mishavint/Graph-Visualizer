@@ -7,11 +7,13 @@ import visualizer.model.*
 import java.util.*
 import nl.cwts.networkanalysis.run.RunNetworkClustering
 import javafx.scene.paint.Color
+import tornadofx.FX.Companion.log
 import kotlin.random.Random
 
 class Algorithms(private val graphView: GraphView) {
 
     fun mainVertexes() {
+        log.info("Searching of centrality started")
         val lstAdj = graphView.graph().listOfAdjacency()
         val vertexes = graphView.graph().vertexes()
 
@@ -81,6 +83,7 @@ class Algorithms(private val graphView: GraphView) {
             val normalizedValue = centralityCoefficient[it.key]!! / (vertexes.size * vertexes.size / 2)
             it.value.reBindRadiusProperty(doubleProperty(it.value.radius + 3 * normalizedValue))
         }
+        log.info("Searching of centrality was finished")
     }
 
     private fun randomColor(): Color = Color.rgb(
@@ -90,6 +93,7 @@ class Algorithms(private val graphView: GraphView) {
     )
 
     fun communitiesDetection(resolution: Double = 0.14) {
+        log.info("Communities detection was started")
         val graph = graphView.graph()
         val fileBeforeLeidenAlg = "tmp/fileBeforeLeidenAlg.csv"
         val fileAfterLeidenAlg = "tmp/fileAfterLeidenAlg.csv"
@@ -150,5 +154,6 @@ class Algorithms(private val graphView: GraphView) {
             if (countedVertices[it.vertex] == true)
                 it.color = mapOfColorsToVertices[count++]!!
         }
+        log.info("Communities detection was finished")
     }
 }

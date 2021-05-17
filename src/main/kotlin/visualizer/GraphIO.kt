@@ -5,6 +5,7 @@ import org.apache.commons.csv.*
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import tornadofx.FX.Companion.log
 import tornadofx.c
 import visualizer.view.*
 import visualizer.model.*
@@ -34,6 +35,7 @@ class GraphIO {
     }
 
     fun writeToFile(graphView: GraphView, fileName: String) {
+        log.info("Writing to file was started")
         val visited = graphView.vertexes().keys.associateWith {
             false
         }.toMutableMap()
@@ -66,9 +68,11 @@ class GraphIO {
         }
         csvPrinter.flush()
         csvPrinter.close()
+        log.info("Writing to file was finished")
     }
 
     fun readFromFile(graphView: GraphView, fileName: String): MutableMap<String, VertexInfo> {
+        log.info("Reading from file was started")
         val reader = Files.newBufferedReader(Paths.get(fileName))
         val csvReader = CSVParser(reader, CSVFormat.DEFAULT)
 
@@ -101,10 +105,12 @@ class GraphIO {
 
         graphView.updateGraph(graph)
         csvReader.close()
+        log.info("Reading from file was finished")
         return vertexInfo
     }
 
     fun readGraphEdges(graphView: GraphView, fileName: String) {
+        log.info("Reading edges from file was started")
         val reader = Files.newBufferedReader(Paths.get(fileName))
 
         val lines = reader.readLines()
@@ -118,9 +124,11 @@ class GraphIO {
             graph.addEdge(edge[0], edge[1], "${i * 4000}")
         }
         graphView.updateGraph(graph)
+        log.info("Reading edges from file was finished")
     }
 
     fun writeToSQLite(graphView: GraphView, fileName: String) {
+        log.info("Writing graph to data base was started (SQLLite)")
         if (fileName.isEmpty())
             return
 
@@ -147,9 +155,11 @@ class GraphIO {
                 }
             }
         }
+        log.info("Writing graph to data base was finished (SQLLite)")
     }
 
     fun readFromSQLite(graphView: GraphView, fileName: String): MutableMap<String, VertexInfo> {
+        log.info("Reading graph from data base was started (SQLLite)")
         Database.connect("jdbc:sqlite:${fileName}", "org.sqlite.JDBC")
         val vertexInfo = mutableMapOf<String, VertexInfo>()
         val graph = UndirectedGraph()
@@ -175,6 +185,7 @@ class GraphIO {
         }
 
         graphView.updateGraph(graph)
+        log.info("Reading graph from data base was finished (SQLLite)")
         return vertexInfo
     }
 }

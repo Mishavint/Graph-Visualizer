@@ -27,6 +27,7 @@ class MainView : View("Graph visualizer") {
                     menu("File") {
                         item("Save to file") {
                             action {
+                                log.info("Save button was clicked")
                                 fileName.value = chooseFile(
                                     title = "Save to",
                                     filters = arrayOf(FileChooser.ExtensionFilter("Text files", "*.csv")),
@@ -37,6 +38,7 @@ class MainView : View("Graph visualizer") {
                         }
                         item("Read from file") {
                             action {
+                                log.info("Reading from file button was clicked")
                                 fileName.value = chooseFile(
                                     filters = arrayOf(
                                         FileChooser.ExtensionFilter(
@@ -51,6 +53,7 @@ class MainView : View("Graph visualizer") {
                         separator()
                         item("Save to SQLite") {
                             action {
+                                log.info("Button \"Save to SQLite was clicked\"")
                                 fileName.value = chooseFile(
                                     filters = arrayOf(
                                         FileChooser.ExtensionFilter(
@@ -64,6 +67,7 @@ class MainView : View("Graph visualizer") {
                         }
                         item("Read from SQLite") {
                             action  {
+                                log.info("Button \"Read from SQLite was clicked\"")
                                 fileName.value = chooseFile(
                                     filters = arrayOf(
                                         FileChooser.ExtensionFilter(
@@ -132,6 +136,7 @@ class MainView : View("Graph visualizer") {
                         add(it)
                         button("Start Leiden algorithm") {
                             action {
+                                log.info("Button \"Start Leiden algorithm\" was clicked")
                                 try {
                                     Algorithms(graph).communitiesDetection(it.text.toDouble())
                                 } catch (ex:java.lang.NumberFormatException) {
@@ -149,6 +154,7 @@ class MainView : View("Graph visualizer") {
                     button("Run") {
                         useMaxWidth = true
                         action {
+                            log.info("Button for start FA2 was clicked")
                             text = if(fa2.runFA(graph)) "Stop"
                             else "Run"
                         }
@@ -163,6 +169,7 @@ class MainView : View("Graph visualizer") {
                         tooltip("Searching betweenness centrality")
                         useMaxWidth = true
                         action {
+                            log.info("Button for search centrality was clicked")
                             Algorithms(graph).mainVertexes()
                         }
                     }
@@ -172,6 +179,7 @@ class MainView : View("Graph visualizer") {
 
                     button("Set black color to vertices") {
                         action {
+                            log.info("Button \"Set black color to vertices\" was clicked")
                             vertexController.setBlackColor(graph.vertexes().values)
                         }
                     }
@@ -181,6 +189,7 @@ class MainView : View("Graph visualizer") {
                 button("Graph0 (0.7K)") {
                     useMaxWidth = true
                     action {
+                        log.info("Button \"Graph0 (0.7K)\" was clicked")
                         GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
                         arrangeInCircle()
                     }
@@ -189,6 +198,7 @@ class MainView : View("Graph visualizer") {
                 button("Graph1 (0.9K)") {
                     useMaxWidth = true
                     action {
+                        log.info("Button \"Graph1 (0.9K)\" was clicked")
                         GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
                         arrangeInCircle()
                     }
@@ -197,6 +207,7 @@ class MainView : View("Graph visualizer") {
                 button("Graph4 (34)") {
                     useMaxWidth = true
                     action {
+                        log.info("Button \"Graph4 (34)\" was clicked")
                         GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
                         arrangeInCircle()
                     }
@@ -205,6 +216,7 @@ class MainView : View("Graph visualizer") {
                 button("Graph5 (62)") {
                     useMaxWidth = true
                     action {
+                        log.info("Button \"Graph5 (62)\" was clicked")
                         GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
                         arrangeInCircle()
                     }
@@ -213,6 +225,7 @@ class MainView : View("Graph visualizer") {
                 button("Graph2 (5K)") {
                     useMaxWidth = true
                     action {
+                        log.info("Button \"Graph2 (5K)\" was clicked")
                         GraphIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
                         arrangeInCircle()
                     }
@@ -221,6 +234,7 @@ class MainView : View("Graph visualizer") {
                 button("Graph3 (7K)") {
                     useMaxWidth = true
                     action {
+                        log.info("Button \"Graph3 (7K)\" was clicked")
                         GraphIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
                         arrangeInCircle()
                     }
