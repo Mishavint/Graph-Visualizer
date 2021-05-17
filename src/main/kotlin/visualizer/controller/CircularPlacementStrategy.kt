@@ -12,6 +12,7 @@ import kotlin.random.Random
 
 class CircularPlacementStrategy: Controller() {
     fun place(width: Double, height: Double, vertices: Collection<VertexView>) {
+        log.info("Circular placement started")
         if (vertices.isEmpty()) {
             println("CircularPlacementStrategy.place: there is nothing to place 👐🏻")
             return
@@ -33,13 +34,7 @@ class CircularPlacementStrategy: Controller() {
                 it.position = point.x to point.y
                 it.color = if (Random.nextBoolean()) Color.BLUE else Color.RED
             }
-    }
-
-    fun <V> highlight(vertices: Collection<VertexView>) {
-        vertices
-            .onEach {
-                it.color = if (Random.nextBoolean()) Color.GREEN else Color.BLUE
-            }
+        log.info("Circular placement finished")
     }
 
     private fun Point2D.rotate(pivot: Point2D, degrees: Double): Point2D {
