@@ -5,7 +5,7 @@ internal class UndirectedGraph: Graph {
     private val edges = hashMapOf<String, Edge>()
     private val listOfAdjacency = hashMapOf<Vertex, ArrayList<Vertex>>()
 
-    override fun vertexes(): MutableCollection<Vertex> = vertexes.values
+    override fun vertices(): MutableCollection<Vertex> = vertexes.values
 
     override fun edges(): MutableCollection<Edge> = edges.values
 
@@ -35,7 +35,7 @@ internal class UndirectedGraph: Graph {
         var first: Vertex,
         var second: Vertex,
     ): Edge {
-        override val vertexes
+        override val vertices
             get() = first to second
     }
 }

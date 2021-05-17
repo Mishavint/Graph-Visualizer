@@ -12,10 +12,10 @@ import kotlin.random.Random
 
 class Algorithms(private val graphView: GraphView) {
 
-    fun mainVertexes() {
+    fun mainVertices(coefficient: Double) {
         log.info("Searching of centrality started")
         val lstAdj = graphView.graph().listOfAdjacency()
-        val vertexes = graphView.graph().vertexes()
+        val vertexes = graphView.graph().vertices()
 
         val queue: Queue<Vertex> = LinkedList()
         val stack = Stack<Vertex>()
@@ -78,12 +78,19 @@ class Algorithms(private val graphView: GraphView) {
                 }
             }
         }
-        print(centralityCoefficient)
-        graphView.vertexes().forEach {
+        graphView.vertices().forEach {
             val normalizedValue = centralityCoefficient[it.key]!! / (vertexes.size * vertexes.size / 2)
-            it.value.reBindRadiusProperty(doubleProperty(it.value.radius + 3 * normalizedValue))
+            it.value.rebindRadiusProperty(doubleProperty(it.value.radius + coefficient * normalizedValue))
         }
         log.info("Searching of centrality was finished")
+    }
+
+    fun resetCentrality(prevRadius: Double) {
+        log.info("Resetting centrality was started")
+        graphView.vertices().forEach {
+            it.value.rebindRadiusProperty(doubleProperty(prevRadius))
+        }
+        log.info("Resetting centrality was finished")
     }
 
     private fun randomColor(): Color = Color.rgb(
@@ -108,19 +115,19 @@ class Algorithms(private val graphView: GraphView) {
         val listOfVertices: MutableMap<String, Int> = mutableMapOf()
         val countedVertices: MutableMap<Vertex, Boolean> = mutableMapOf()
         var count = 0
-        graph.vertexes().forEach {
+        graph.vertices().forEach {
             countedVertices[it] = false
             listOfVertices[it.element] = count++
         }
 
         csvWriter().open(fileBeforeLeidenAlg) {
             graph.edges().forEach {
-                if (it.vertexes.first != it.vertexes.second)
-                    writeRow("${listOfVertices[it.vertexes.first.element]}\t${listOfVertices[it.vertexes.second.element]}")
+                if (it.vertices.first != it.vertices.second)
+                    writeRow("${listOfVertices[it.vertices.first.element]}\t${listOfVertices[it.vertices.second.element]}")
 
 
-                countedVertices[it.vertexes.first] = true
-                countedVertices[it.vertexes.second] = true
+                countedVertices[it.vertices.first] = true
+                countedVertices[it.vertices.second] = true
             }
             close()
         }
@@ -157,7 +164,7 @@ class Algorithms(private val graphView: GraphView) {
 
         count = 0
 
-        graphView.vertexes().values.forEach {
+        graphView.vertices().values.forEach {
             if (countedVertices[it.vertex] == true)
                 it.color = mapOfColorsToVertices[count++]!!
         }

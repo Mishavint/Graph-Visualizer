@@ -30,7 +30,7 @@ class VertexView(
             fill = value
         }
 
-    fun reBindRadiusProperty(radius: DoubleProperty) {
+    fun rebindRadiusProperty(radius: DoubleProperty) {
         radiusProperty().bind(radius)
     }
 }

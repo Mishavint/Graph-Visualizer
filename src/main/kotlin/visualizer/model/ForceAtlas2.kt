@@ -57,7 +57,7 @@ class ForceAtlas2(var graph: GraphView) {
     }
 
     private fun initAlgo() {
-        for (i in 0..graph.vertexes().size) {
+        for (i in 0..graph.vertices().size) {
             var n = Node()
             n.old_dx = 0.0
             n.old_dy = 0.0
@@ -69,7 +69,7 @@ class ForceAtlas2(var graph: GraphView) {
             nodes.add(n)
         }
         var count = 0
-        graph.vertexes().values.onEach { nodes[count].x = it.centerX; nodes[count].y = it.centerY; count++ }
+        graph.vertices().values.onEach { nodes[count].x = it.centerX; nodes[count].y = it.centerY; count++ }
 
         //--edges--//OLD_hardcode
         /*var edge = Edge()
@@ -94,13 +94,13 @@ class ForceAtlas2(var graph: GraphView) {
         var stage1 = mutableListOf<String>()
         var stage2 = mutableListOf<String>()
         var stage3 = mutableListOf<Int>()
-        for (i in graph.vertexes().keys) {
+        for (i in graph.vertices().keys) {
             stage1.add(i.element)
         }
 
         for (i in graph.edges().keys) {
-            stage2.add(i.vertexes.first.element)
-            stage2.add(i.vertexes.second.element)
+            stage2.add(i.vertices.first.element)
+            stage2.add(i.vertices.second.element)
         }
 
         stage2.forEach { stage3.add(stage1.indexOf(it)) }
@@ -148,7 +148,7 @@ class ForceAtlas2(var graph: GraphView) {
 
         //Resetting positions after applying forces // SHIT STUFF
         var count = 0
-        graph.vertexes().values.onEach { it.position = nodes[count].x to nodes[count].y; count++ }
+        graph.vertices().values.onEach { it.position = nodes[count].x to nodes[count].y; count++ }
     }
 
     private fun linGravity(n: Node, g: Double) {
