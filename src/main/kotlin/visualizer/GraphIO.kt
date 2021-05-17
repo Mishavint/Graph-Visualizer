@@ -198,6 +198,7 @@ class GraphIO {
     }
 
     fun writeToNeo4j(graphView: GraphView) {
+        log.info("Writing graph to data base was started (Neo4j)")
         val driver = GraphDatabase.driver(Neo4jConnectionTicket.uri, AuthTokens.basic(Neo4jConnectionTicket.username, Neo4jConnectionTicket.password))
         val session = driver.session()
 
@@ -229,9 +230,11 @@ class GraphIO {
 
         session.close()
         driver.close()
+        log.info("Writing graph to data base was finished (Neo4j)")
     }
 
     fun readFromNeo4j(graphView: GraphView): MutableMap<String, VertexInfo> {
+        log.info("Reading graph from data base was started (Neo4j)")
         val vertexInfo = mutableMapOf<String, VertexInfo>()
         val graph = UndirectedGraph()
 
@@ -266,6 +269,7 @@ class GraphIO {
         driver.close()
 
         graphView.updateGraph(graph)
+        log.info("Reading graph from data base was finished (Neo4j)")
         return vertexInfo
     }
 }

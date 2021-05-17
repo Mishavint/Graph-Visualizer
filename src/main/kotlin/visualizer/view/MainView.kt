@@ -89,6 +89,7 @@ class MainView : View("Graph visualizer") {
                         separator()
                         item("Save to Neo4j") {
                             action {
+                                log.info("Saving to Neo4j button was clicked")
                                 GraphIO().writeToNeo4j(graph)
 
                                 fa2.stop()
@@ -96,6 +97,7 @@ class MainView : View("Graph visualizer") {
                         }
                         item("Read from Neo4j") {
                             action {
+                                log.info("Reading from Neo4j button was clicked")
                                 val vertexInfo = GraphIO().readFromNeo4j(graph)
                                 drawNewGraph(vertexInfo)
                             }
@@ -180,6 +182,7 @@ class MainView : View("Graph visualizer") {
                         togglebutton("Barnes Hut Optimization", null, false) {
                             useMaxWidth = true
                             action {
+                                log.info("FA2 barnesHutOptimize was changed")
                                 fa2.barnesHutOptimize(!isDisabled)
                             }
                         }
@@ -187,6 +190,7 @@ class MainView : View("Graph visualizer") {
                         togglebutton("Strong Gravity", null, false) {
                             useMaxWidth = true
                             action {
+                                log.info("FA2 strongGravityMode was changed")
                                 fa2.strongGravityMode(!isDisabled)
                             }
                         }
@@ -196,11 +200,16 @@ class MainView : View("Graph visualizer") {
                             add(it)
                             button("set") {
                                 action {
+                                    log.info("FA2 speed is being changing")
                                     try {
-                                        if (it.text.toDouble() < 0.0)
+                                        if (it.text.toDouble() < 0.0) {
+                                            log.info("FA2 speed value was < 0.0")
                                             throw java.lang.NumberFormatException()
+                                        }
                                         fa2.speed(it.text.toDouble())
+                                        log.info("FA2 speed was changed")
                                     } catch (ex: java.lang.NumberFormatException) {
+                                        log.info("FA2 speed value input was invalid")
                                         alert(Alert.AlertType.ERROR, "Please enter valid value")
                                         return@action
                                     }
@@ -213,11 +222,16 @@ class MainView : View("Graph visualizer") {
                             add(it)
                             button("set") {
                                 action {
+                                    log.info("FA2 speed efficiency is being changing")
                                     try {
-                                        if (it.text.toDouble() < 0.0)
+                                        if (it.text.toDouble() < 0.0) {
+                                            log.info("FA2 speed efficiency value was < 0.0")
                                             throw java.lang.NumberFormatException()
+                                        }
                                         fa2.speedEfficiency(it.text.toDouble())
+                                        log.info("FA2 speed efficiency was changed")
                                     } catch (ex: java.lang.NumberFormatException) {
+                                        log.info("FA2 speed efficiency value input was invalid")
                                         alert(Alert.AlertType.ERROR, "Please enter valid value")
                                         return@action
                                     }
@@ -230,11 +244,16 @@ class MainView : View("Graph visualizer") {
                             add(it)
                             button("set") {
                                 action {
+                                    log.info("FA2 jitter tolerance is being changing")
                                     try {
-                                        if (it.text.toDouble() < 0.0)
+                                        if (it.text.toDouble() < 0.0) {
+                                            log.info("FA2 jitter tolerance value was < 0.0")
                                             throw java.lang.NumberFormatException()
+                                        }
                                         fa2.jitterTolerance(it.text.toDouble())
+                                        log.info("FA2 jitter tolerance was changed")
                                     } catch (ex: java.lang.NumberFormatException) {
+                                        log.info("FA2 jitter tolerance value input was invalid")
                                         alert(Alert.AlertType.ERROR, "Please enter valid value")
                                         return@action
                                     }
@@ -247,11 +266,16 @@ class MainView : View("Graph visualizer") {
                             add(it)
                             button("set") {
                                 action {
+                                    log.info("FA2 scaling ratio is being changing")
                                     try {
-                                        if (it.text.toDouble() < 0.0)
+                                        if (it.text.toDouble() < 0.0) {
+                                            log.info("FA2 scaling ratio value was < 0.0")
                                             throw java.lang.NumberFormatException()
+                                        }
                                         fa2.scalingRatio(it.text.toDouble())
+                                        log.info("FA2 scaling ratio was changed")
                                     } catch (ex: java.lang.NumberFormatException) {
+                                        log.info("FA2 scaling ratio value input was invalid")
                                         alert(Alert.AlertType.ERROR, "Please enter valid value")
                                         return@action
                                     }
@@ -264,11 +288,16 @@ class MainView : View("Graph visualizer") {
                             add(it)
                             button("set") {
                                 action {
+                                    log.info("FA2 gravity is being changing")
                                     try {
-                                        if (it.text.toDouble() < 0.0)
+                                        if (it.text.toDouble() < 0.0) {
+                                            log.info("FA2 gravity value was < 0.0")
                                             throw java.lang.NumberFormatException()
+                                        }
                                         fa2.gravity(it.text.toDouble())
+                                        log.info("FA2 gravity was changed")
                                     } catch (ex: java.lang.NumberFormatException) {
+                                        log.info("FA2 gravity value input was invalid")
                                         alert(Alert.AlertType.ERROR, "Please enter valid value")
                                         return@action
                                     }
@@ -281,11 +310,16 @@ class MainView : View("Graph visualizer") {
                             add(it)
                             button("set") {
                                 action {
+                                    log.info("FA2 barnes hut theta is being changing")
                                     try {
-                                        if (it.text.toDouble() < 0.0)
+                                        if (it.text.toDouble() < 0.0) {
+                                            log.info("FA2 barnes hut theta value was < 0.0")
                                             throw java.lang.NumberFormatException()
+                                        }
                                         fa2.barnesHutTheta(it.text.toDouble())
+                                        log.info("FA2 barnes hut theta was changed")
                                     } catch (ex: java.lang.NumberFormatException) {
+                                        log.info("FA2 barnes hut theta input was invalid")
                                         alert(Alert.AlertType.ERROR, "Please enter valid value")
                                         return@action
                                     }
