@@ -36,18 +36,18 @@ class GraphIO {
 
     fun writeToFile(graphView: GraphView, fileName: String) {
         log.info("Writing to file was started")
-        val visited = graphView.vertexes().keys.associateWith {
+        val visited = graphView.vertices().keys.associateWith {
             false
         }.toMutableMap()
         val writer = Files.newBufferedWriter(Paths.get(fileName))
         val csvPrinter = CSVPrinter(writer, CSVFormat.DEFAULT)
 
         graphView.edges().forEach {
-            val v = it.key.vertexes.first
-            val u = it.key.vertexes.second
-            val vView = graphView.vertexes()[v]
+            val v = it.key.vertices.first
+            val u = it.key.vertices.second
+            val vView = graphView.vertices()[v]
                 ?: throw IllegalStateException("VertexView for $v not found")
-            val uView = graphView.vertexes()[u]
+            val uView = graphView.vertices()[u]
                 ?: throw IllegalStateException("VertexView for $u not found")
             csvPrinter.printRecord(
                 v.element, "${vView.centerX} ${vView.centerY}", vView.radius, vView.color.toString(),
@@ -56,9 +56,9 @@ class GraphIO {
             visited[v] = true
             visited[u] = true
         }
-        graphView.vertexes().forEach {
+        graphView.vertices().forEach {
             if (!visited[it.key]!!) {
-                val itView = graphView.vertexes()[it.key]
+                val itView = graphView.vertices()[it.key]
                     ?: throw IllegalStateException("VertexView for $it not found")
                 csvPrinter.printRecord(
                     it.key.element, "${itView.centerX} ${itView.centerY}", itView.radius,
@@ -137,7 +137,7 @@ class GraphIO {
             SchemaUtils.drop(VerticesTable, EdgesTable)
             SchemaUtils.create(VerticesTable, EdgesTable)
 
-            graphView.vertexes().values.forEach { vertex ->
+            graphView.vertices().values.forEach { vertex ->
                 VerticesTable.insert {
                     it[id] = vertex.vertex.element
                     it[centerX] = vertex.position.first
@@ -149,8 +149,8 @@ class GraphIO {
 
             graphView.edges().forEach { edge ->
                 EdgesTable.insert {
-                    it[firstVertex] = edge.key.vertexes.first.element
-                    it[secondVertex] = edge.key.vertexes.second.element
+                    it[firstVertex] = edge.key.vertices.first.element
+                    it[secondVertex] = edge.key.vertices.second.element
                     it[element] = edge.key.element
                 }
             }

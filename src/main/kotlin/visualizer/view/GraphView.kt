@@ -8,7 +8,7 @@ import tornadofx.*
 
 class GraphView(private var graph: Graph = UndirectedGraph()): Pane() {
     private val dragger = find(VertexDragController::class)
-    private var vertexes = graph.vertexes().associateWith {
+    private var vertices = graph.vertices().associateWith {
         VertexView(it, 0.0, 0.0, doubleProperty(5.0), Color.BLACK)
     }.toMutableMap()
 
@@ -16,7 +16,7 @@ class GraphView(private var graph: Graph = UndirectedGraph()): Pane() {
     private var edges = addEdges()
 
     fun graph() = graph
-    fun vertexes(): Map<Vertex, VertexView> = vertexes
+    fun vertices(): Map<Vertex, VertexView> = vertices
     fun edges(): Map<Edge, EdgeView> = edges
 
     init {
@@ -24,7 +24,7 @@ class GraphView(private var graph: Graph = UndirectedGraph()): Pane() {
             add(it.value)
         }
 
-        vertexes().forEach { v ->
+        vertices().forEach { v ->
             add(v.value)
             v.value.setOnMouseDragged { e -> dragger.dragVertex(e) }
         }
@@ -33,7 +33,7 @@ class GraphView(private var graph: Graph = UndirectedGraph()): Pane() {
     fun updateGraph(graph: Graph) {
         this.clear()
         this.graph = graph
-        vertexes = graph.vertexes().associateWith {
+        vertices = graph.vertices().associateWith {
             VertexView(it, 0.0, 0.0, doubleProperty(5.0), Color.BLACK)
         }.toMutableMap()
 
@@ -44,17 +44,17 @@ class GraphView(private var graph: Graph = UndirectedGraph()): Pane() {
             add(it.value)
         }
 
-        vertexes().forEach { v ->
+        vertices().forEach { v ->
             add(v.value)
             v.value.setOnMouseDragged { e -> dragger.dragVertex(e) }
         }
     }
 
     private fun addEdges() = graph.edges().associateWith {
-        val first = vertexes[it.vertexes.first]
-            ?: throw IllegalStateException("VertexView for ${it.vertexes.first} not found")
-        val second = vertexes[it.vertexes.second]
-            ?: throw IllegalStateException("VertexView for ${it.vertexes.second} not found")
+        val first = vertices[it.vertices.first]
+            ?: throw IllegalStateException("VertexView for ${it.vertices.first} not found")
+        val second = vertices[it.vertices.second]
+            ?: throw IllegalStateException("VertexView for ${it.vertices.second} not found")
         EdgeView(it, first, second)
     }.toMutableMap()
 }

@@ -5,7 +5,6 @@ import javafx.geometry.Point2D
 import javafx.scene.paint.Color
 import visualizer.view.VertexView
 import java.lang.Double.min
-import java.lang.Math.random
 import kotlin.math.sin
 import kotlin.math.cos
 import kotlin.random.Random

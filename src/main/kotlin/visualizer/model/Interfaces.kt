@@ -6,13 +6,11 @@ interface Vertex {
 
 interface Edge {
     var element: String
-    val vertexes: Pair<Vertex, Vertex>
-
-    fun incident(v: Vertex) = v == vertexes.first || v == vertexes.second
+    val vertices: Pair<Vertex, Vertex>
 }
 
 interface Graph {
-    fun vertexes(): MutableCollection<Vertex>
+    fun vertices(): MutableCollection<Vertex>
     fun edges(): MutableCollection<Edge>
     fun listOfAdjacency(): HashMap<Vertex, ArrayList<Vertex>>
 

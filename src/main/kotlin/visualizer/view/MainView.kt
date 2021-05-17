@@ -10,6 +10,7 @@ import javafx.stage.StageStyle
 import tornadofx.*
 import visualizer.controller.*
 import java.io.File
+import kotlin.properties.Delegates
 
 class MainView : View("Graph visualizer") {
     private val fileName = SimpleStringProperty("DefaultName")
@@ -164,13 +165,42 @@ class MainView : View("Graph visualizer") {
 
                 titledpane("Centrality") {
                     expandedProperty().set(false)
+                    var counter = 0
+                    var prevRadius by Delegates.notNull<Double>()
+                    var coefficient by Delegates.notNull<Double>()
+
+                    val slider = slider(1.0, 20.0, 6.0) {
+                        isShowTickMarks = true
+                        isShowTickLabels = true
+                        isSnapToTicks = true
+                        majorTickUnit = 2.0
+                        blockIncrement = 1.0
+                    }
 
                     button("Centrality") {
                         tooltip("Searching betweenness centrality")
                         useMaxWidth = true
                         action {
                             log.info("Button for search centrality was clicked")
-                            Algorithms(graph).mainVertexes()
+                            if (graph.vertices().isNotEmpty()) {
+                                prevRadius = graph.vertices().values.first().radius
+                                if (counter == 0) {
+                                    coefficient = slider.value
+                                    Algorithms(graph).mainVertices(coefficient)
+                                }
+                                counter ++
+                            }
+                        }
+                    }
+
+                    button("Reset Centrality") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Reset Centrality\" was clicked")
+                            if (counter != 0) {
+                                counter = 0
+                                Algorithms(graph).resetCentrality(prevRadius)
+                            }
                         }
                     }
                 }
@@ -180,7 +210,7 @@ class MainView : View("Graph visualizer") {
                     button("Set black color to vertices") {
                         action {
                             log.info("Button \"Set black color to vertices\" was clicked")
-                            vertexController.setBlackColor(graph.vertexes().values)
+                            vertexController.setBlackColor(graph.vertices().values)
                         }
                     }
                 }
@@ -274,7 +304,7 @@ class MainView : View("Graph visualizer") {
 
     private fun arrangeInCircle() {
         currentStage?.apply {
-            CircularPlacementStrategy().place(graph.width, graph.height, graph.vertexes().values)
+            CircularPlacementStrategy().place(graph.width, graph.height, graph.vertices().values)
         }
     }
 
@@ -286,7 +316,7 @@ class MainView : View("Graph visualizer") {
 
     private fun arrangeVertexes() {
         currentStage?.apply {
-            strategy.place(graph.width, graph.height, graph.vertexes().values)
+            strategy.place(graph.width, graph.height, graph.vertices().values)
         }
     }
 
