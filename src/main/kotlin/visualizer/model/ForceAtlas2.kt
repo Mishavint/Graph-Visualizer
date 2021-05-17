@@ -1,6 +1,7 @@
 package visualizer.model
 
 import visualizer.view.GraphView
+import tornadofx.FX.Companion.log
 
 class ForceAtlas2(var graph: GraphView) {
     private var nodes = mutableListOf<Node>()
@@ -129,6 +130,7 @@ class ForceAtlas2(var graph: GraphView) {
             e.node2 = nodes[findNodeWithId(edge.key.vertices.second.element)]
             edges.add(e)
         }
+        log.info("FA2 was initialized")
     }
 
     private fun findNodeWithId(neededId: String): Int {
@@ -136,7 +138,8 @@ class ForceAtlas2(var graph: GraphView) {
             if (nodes[i].id == neededId) return i
         }
 
-        return -1
+        log.info("!!!a third-party node was found on an edge!!!")
+        return 0
     }
 
     private fun linGravity(n: Node, g: Double) {
