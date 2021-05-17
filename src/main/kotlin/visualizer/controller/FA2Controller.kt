@@ -1,21 +1,27 @@
 package visualizer.controller
 
 import javafx.animation.AnimationTimer
-
 import visualizer.model.ForceAtlas2
 import visualizer.view.GraphView
 
 class FA2Controller : AnimationTimer() {
-    private lateinit var fa2:ForceAtlas2
+    private lateinit var fa2: ForceAtlas2
+    private var speed = 1.0
+    private var speedEfficiency = 1.0
+    private var jitterTolerance = 1.0
+    private var scalingRatio = 100.0
+    private var strongGravityMode = false
+    private var gravity = 1.0
+    private var barnesHutOptimize = false
+    private var barnesHutTheta = 1.0
     private var status = false
 
     override fun handle(now: Long) {
         fa2.runAlgo()
     }
 
-    fun runFA(graph: GraphView): Boolean {
+    fun runFA(): Boolean {
         if (!status) {
-            fa2 = ForceAtlas2(graph)
             this.start()
             status = !status
         } else {
@@ -27,34 +33,50 @@ class FA2Controller : AnimationTimer() {
     }
 
     fun speed(speed: Double) {
-        fa2.speed = speed
+        this.speed = speed
     }
 
     fun speedEfficiency(speedEfficiency: Double) {
-        fa2.speedEfficiency = speedEfficiency
+        this.speedEfficiency = speedEfficiency
     }
 
     fun jitterTolerance(jitterTolerance: Double) {
-        fa2.jitterTolerance = jitterTolerance
+        this.jitterTolerance = jitterTolerance
     }
 
     fun scalingRatio(scalingRatio: Double) {
-        fa2.scalingRatio = scalingRatio
+        this.scalingRatio = scalingRatio
     }
 
     fun strongGravityMode(strongGravityMode: Boolean) {
-        fa2.strongGravityMode = strongGravityMode
+        this.strongGravityMode = strongGravityMode
     }
 
     fun gravity(gravity: Double) {
-        fa2.gravity = gravity
+        this.gravity = gravity
     }
 
     fun barnesHutOptimize(barnesHutOptimize: Boolean) {
-        fa2.barnesHutOptimize = barnesHutOptimize
+        this.barnesHutOptimize = barnesHutOptimize
     }
 
     fun barnesHutTheta(barnesHutTheta: Double) {
-        fa2.barnesHutTheta = barnesHutTheta
+        this.barnesHutTheta = barnesHutTheta
+    }
+
+    fun prepareFA2(graph: GraphView) {
+        fa2 = ForceAtlas2(graph)
+    }
+
+    fun applySettings() {
+        if (!this::fa2.isInitialized) return
+        fa2.speed = this.speed
+        fa2.speedEfficiency = this.speedEfficiency
+        fa2.jitterTolerance = this.jitterTolerance
+        fa2.scalingRatio = this.scalingRatio
+        fa2.strongGravityMode = this.strongGravityMode
+        fa2.gravity = this.gravity
+        fa2.barnesHutOptimize = this.barnesHutOptimize
+        fa2.barnesHutTheta = this.barnesHutTheta
     }
 }

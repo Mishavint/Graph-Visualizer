@@ -5,6 +5,8 @@ import org.apache.commons.csv.*
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.neo4j.driver.AuthTokens
+import org.neo4j.driver.GraphDatabase
 import tornadofx.c
 import visualizer.view.*
 import visualizer.model.*
@@ -17,6 +19,12 @@ class GraphIO {
         val radius: Double,
         val color: Color
     )
+
+    object Neo4jConnectionTicket {
+        const val uri = "bolt://3.238.4.152:7687"
+        const val username = "neo4j"
+        const val password = "shaves-strain-roadside"
+    }
 
     object VerticesTable : IdTable<String>() {
         override val id = varchar("id", 256).entityId()
@@ -173,6 +181,78 @@ class GraphIO {
                 graph.addEdge(v1, v2, vElement)
             }
         }
+
+        graphView.updateGraph(graph)
+        return vertexInfo
+    }
+
+    fun writeToNeo4j(graphView: GraphView) {
+        val driver = GraphDatabase.driver(Neo4jConnectionTicket.uri, AuthTokens.basic(Neo4jConnectionTicket.username, Neo4jConnectionTicket.password))
+        val session = driver.session()
+
+        session.writeTransaction {
+            for (node in graphView.vertexes().values) {
+                it.run(
+                    "CREATE(:vertices{id:\$id, centerX:\$centerX, centerY:\$centerY, radius:\$radius, color:\$color})",
+                    mutableMapOf(
+                        "id" to node.vertex.element,
+                        "centerX" to node.position.first,
+                        "centerY" to node.position.second,
+                        "radius" to node.radius,
+                        "color" to node.color.toString()
+                    ) as Map<String, Any?>?
+                )
+            }
+
+            for (edge in graphView.edges()) {
+                it.run(
+                    "MATCH(first:vertices{id:\$first_id}), (second:vertices{id:\$second_id}) MERGE(first)-[:edge{element:\$element}]-(second)",
+                    mutableMapOf(
+                        "first_id" to edge.key.vertexes.first.element,
+                        "second_id" to edge.key.vertexes.second.element,
+                        "element" to edge.key.element
+                    ) as Map<String, Any?>?
+                )
+            }
+        }
+
+        session.close()
+        driver.close()
+    }
+
+    fun readFromNeo4j(graphView: GraphView): MutableMap<String, VertexInfo> {
+        val vertexInfo = mutableMapOf<String, VertexInfo>()
+        val graph = UndirectedGraph()
+
+        val driver = GraphDatabase.driver(Neo4jConnectionTicket.uri, AuthTokens.basic(Neo4jConnectionTicket.username, Neo4jConnectionTicket.password))
+        val session = driver.session()
+
+        session.readTransaction {
+            val vertexInfoFromNeo = it.run("MATCH(v:vertices) RETURN v.id AS id, v.centerX AS centerX, v.centerY AS centerY, v.radius AS radius, v.color AS color").list()
+            val edgeInfoFromNeo = it.run("MATCH(first)-[edge]-(second) RETURN first.id AS first, second.id AS second, edge.element AS element").list()
+
+            for (node in vertexInfoFromNeo) {
+                val v = node["id"].toString()
+                val vx = node["centerX"].asDouble()
+                val vy = node["centerY"].asDouble()
+                val vRadius = node["radius"].asDouble()
+                val vColor = c(node["color"].asString())
+
+                graph.addVertex(v)
+                vertexInfo[v] = VertexInfo(vx, vy, vRadius, vColor)
+            }
+
+            for (edge in  edgeInfoFromNeo) {
+                val v1 = edge["first"].toString()
+                val v2 = edge["second"].toString()
+                val vElement = edge["element"].toString()
+
+                graph.addEdge(v1, v2, vElement)
+            }
+        }
+
+        session.close()
+        driver.close()
 
         graphView.updateGraph(graph)
         return vertexInfo
