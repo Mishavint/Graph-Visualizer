@@ -132,12 +132,14 @@ class MainView : View("Graph visualizer") {
 
                     label("Resolution:")
 
-                    textfield("0.1").also {
+                    textfield("0.05").also {
                         add(it)
                         button("Start Leiden algorithm") {
                             action {
                                 log.info("Button \"Start Leiden algorithm\" was clicked")
                                 try {
+                                    if ( it.text.toDouble() < 0.0 )
+                                        throw java.lang.NumberFormatException()
                                     Algorithms(graph).communitiesDetection(it.text.toDouble())
                                 } catch (ex:java.lang.NumberFormatException) {
                                     alert(Alert.AlertType.ERROR, "Please enter valid resolution")
@@ -181,6 +183,18 @@ class MainView : View("Graph visualizer") {
                         action {
                             log.info("Button \"Set black color to vertices\" was clicked")
                             vertexController.setBlackColor(graph.vertexes().values)
+                        }
+                    }
+
+                    button("Increase radius") {
+                        action {
+                            vertexController.increaseRadius(graph.vertexes().values)
+                        }
+                    }
+
+                    button("Decrease radius") {
+                        action {
+                            vertexController.decreaseRadius(graph.vertexes().values)
                         }
                     }
                 }

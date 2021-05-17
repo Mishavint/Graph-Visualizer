@@ -93,7 +93,14 @@ class Algorithms(private val graphView: GraphView) {
     )
 
     fun communitiesDetection(resolution: Double = 0.14) {
+      
         log.info("Communities detection was started")
+      
+        if( graphView.vertexes().isEmpty() {
+         log.info("Graph is empty")
+          return
+        }
+      
         val graph = graphView.graph()
         val fileBeforeLeidenAlg = "tmp/fileBeforeLeidenAlg.csv"
         val fileAfterLeidenAlg = "tmp/fileAfterLeidenAlg.csv"
