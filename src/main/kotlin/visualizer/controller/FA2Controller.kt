@@ -3,6 +3,7 @@ package visualizer.controller
 import javafx.animation.AnimationTimer
 import visualizer.model.ForceAtlas2
 import visualizer.view.GraphView
+import tornadofx.FX.Companion.log
 
 class FA2Controller : AnimationTimer() {
     private lateinit var fa2: ForceAtlas2
@@ -24,9 +25,11 @@ class FA2Controller : AnimationTimer() {
         if (!status) {
             this.start()
             status = !status
+            log.info("FA2 was launched")
         } else {
             this.stop()
             status = !status
+            log.info("FA2 was stopped")
         }
 
         return status
@@ -78,5 +81,6 @@ class FA2Controller : AnimationTimer() {
         fa2.gravity = this.gravity
         fa2.barnesHutOptimize = this.barnesHutOptimize
         fa2.barnesHutTheta = this.barnesHutTheta
+        log.info("Settings changes were applied")
     }
 }
