@@ -177,6 +177,18 @@ class MainView : View("Graph visualizer") {
                             vertexController.setBlackColor(graph.vertexes().values)
                         }
                     }
+
+                    button("Increase radius") {
+                        action {
+                            vertexController.increaseRadius(graph.vertexes().values)
+                        }
+                    }
+
+                    button("Decrease radius") {
+                        action {
+                            vertexController.decreaseRadius(graph.vertexes().values)
+                        }
+                    }
                 }
 
 
