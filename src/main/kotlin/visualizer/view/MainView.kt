@@ -5,8 +5,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.paint.Color
-import javafx.stage.FileChooser
-import javafx.stage.StageStyle
+import javafx.stage.*
 import tornadofx.*
 import visualizer.controller.*
 import java.io.File
@@ -35,7 +34,7 @@ class MainView : View("Graph visualizer") {
                                     filters = arrayOf(FileChooser.ExtensionFilter("Text files", "*.csv")),
                                     mode = FileChooserMode.Save
                                 ).checkFileName()
-                                GraphIO().writeToFile(graph, fileName.get())
+                                fileName.get()?.let { GraphIO().writeToFile(graph, it) }
                             }
                         }
                         item("Read from file") {
@@ -48,8 +47,10 @@ class MainView : View("Graph visualizer") {
                                         )
                                     )
                                 ).checkFileName()
-                                val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
-                                drawNewGraph(vertexInfo)
+                                fileName.get()?.let {
+                                    val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
+                                    drawNewGraph(vertexInfo)
+                                }
                             }
                         }
                         separator()
@@ -79,7 +80,6 @@ class MainView : View("Graph visualizer") {
                                     ),
                                     mode = FileChooserMode.Single
                                 ).checkFileName()
-
                                 fileName.get()?.let {
                                     val vertexInfo = GraphIO().readFromSQLite(graph, fileName.get())
                                     drawNewGraph(vertexInfo)
@@ -129,11 +129,9 @@ class MainView : View("Graph visualizer") {
 
         left = borderpane {
             addClass(Styles.boxBorders)
-
             style {
                 baseColor = Color.LIGHTGREY
             }
-
             center = vbox {
                 titledpane("Community detection") {
                     expandedProperty().set(false)
