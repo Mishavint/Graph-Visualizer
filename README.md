@@ -21,4 +21,10 @@
 
 ## Интерфейс
 На главном окне расположены: меню, рабочая область и раздел с параметрами алгоритмов.
-В "File" можно выбрать способ сохранения графа.  
+В "File" можно выбрать способ сохранения графа. В "Graphs" можно выбрать один из заготовленных
+социальных графов: [Graph1](http://networkrepository.com/soc-karate.php), 
+[Graph2](http://networkrepository.com/soc-dolphins.php),
+[Graph3](http://networkrepository.com/fb-pages-food.php),
+[Graph4](http://networkrepository.com/soc-wiki-Vote.php),
+[Graph5](http://networkrepository.com/soc-advogato.php),
+[Graph6](http://networkrepository.com/soc-wiki-elec.php).
