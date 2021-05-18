@@ -1,4 +1,4 @@
-package visualizer
+package visualizer.controller
 
 import javafx.scene.paint.Color
 import org.apache.commons.csv.*
@@ -199,7 +199,11 @@ class GraphIO {
 
     fun writeToNeo4j(graphView: GraphView) {
         log.info("Writing graph to data base was started (Neo4j)")
-        val driver = GraphDatabase.driver(Neo4jConnectionTicket.uri, AuthTokens.basic(Neo4jConnectionTicket.username, Neo4jConnectionTicket.password))
+        val driver = GraphDatabase.driver(
+            Neo4jConnectionTicket.uri, AuthTokens.basic(
+                Neo4jConnectionTicket.username,
+                Neo4jConnectionTicket.password
+            ))
         val session = driver.session()
 
         session.writeTransaction {
@@ -238,7 +242,11 @@ class GraphIO {
         val vertexInfo = mutableMapOf<String, VertexInfo>()
         val graph = UndirectedGraph()
 
-        val driver = GraphDatabase.driver(Neo4jConnectionTicket.uri, AuthTokens.basic(Neo4jConnectionTicket.username, Neo4jConnectionTicket.password))
+        val driver = GraphDatabase.driver(
+            Neo4jConnectionTicket.uri, AuthTokens.basic(
+                Neo4jConnectionTicket.username,
+                Neo4jConnectionTicket.password
+            ))
         val session = driver.session()
 
         session.readTransaction {

@@ -1,6 +1,6 @@
 package visualizer.view
 
-import visualizer.GraphIO
+import visualizer.controller.GraphIO
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
@@ -14,7 +14,6 @@ import kotlin.properties.Delegates
 class MainView : View("Graph visualizer") {
     private val fileName = SimpleStringProperty("DefaultName")
     private var graph = GraphView()
-    private val strategy: RandomPlacementStrategy by inject()
     private val fa2 = FA2Controller()
     private val vertexController = VertexController()
     private val scrollController = ScrollController()
@@ -109,25 +108,8 @@ class MainView : View("Graph visualizer") {
                     }
                 }
                 menu("Graphs") {
-                    item("Graph0 (0.7K)") {
-                        useMaxWidth = true
-                        action {
-                            log.info("Button \"Graph0 (0.7K)\" was clicked")
-                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
-                            arrangeInCircle()
-                        }
-                    }
 
-                    item("Graph1 (0.9K)") {
-                        useMaxWidth = true
-                        action {
-                            log.info("Button \"Graph1 (0.9K)\" was clicked")
-                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
-                            arrangeInCircle()
-                        }
-                    }
-
-                    item("Graph4 (34)") {
+                    item("Graph1 (34)") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph4 (34)\" was clicked")
@@ -136,7 +118,7 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-                    item("Graph5 (62)") {
+                    item("Graph2 (62)") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph5 (62)\" was clicked")
@@ -145,7 +127,25 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-                    item("Graph2 (5K)") {
+                    item("Graph3 (0.7K)") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Graph0 (0.7K)\" was clicked")
+                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    item("Graph4 (0.9K)") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Graph1 (0.9K)\" was clicked")
+                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    item("Graph5 (5K)") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph2 (5K)\" was clicked")
@@ -154,7 +154,7 @@ class MainView : View("Graph visualizer") {
                         }
                     }
 
-                    item("Graph3 (7K)") {
+                    item("Graph6 (7K)") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph3 (7K)\" was clicked")
@@ -164,6 +164,7 @@ class MainView : View("Graph visualizer") {
                     }
                 }
             }
+
             addClass(Styles.boxBordersForMenu)
             center = hbox {
                 alignment = Pos.BOTTOM_CENTER

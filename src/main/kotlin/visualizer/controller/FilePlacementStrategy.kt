@@ -2,7 +2,6 @@ package visualizer.controller
 
 import tornadofx.Controller
 import tornadofx.doubleProperty
-import visualizer.GraphIO
 import visualizer.view.GraphView
 
 class FilePlacementStrategy: Controller() {

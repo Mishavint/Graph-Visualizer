@@ -1,6 +1,6 @@
 import javafx.beans.property.SimpleDoubleProperty
 import org.junit.jupiter.api.*
-import visualizer.GraphIO
+import visualizer.controller.GraphIO
 import visualizer.controller.FilePlacementStrategy
 import visualizer.view.*
 import java.io.File

@@ -1,10 +1,9 @@
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.neo4j.driver.AuthTokens
 import org.neo4j.driver.GraphDatabase
-import visualizer.GraphIO
+import visualizer.controller.GraphIO
 import visualizer.view.GraphView
 
 internal class Neo4jTests {

@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import visualizer.model.UndirectedGraph
 import visualizer.view.GraphView
-import visualizer.GraphIO
+import visualizer.controller.GraphIO
 import java.nio.file.Files
 import java.nio.file.Paths
 
