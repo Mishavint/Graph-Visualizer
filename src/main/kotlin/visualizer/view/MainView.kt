@@ -23,97 +23,143 @@ class MainView : View("Graph visualizer") {
 
         top = borderpane {
             left = menubar {
-                menu("Settings") {
-                    menu("File") {
-                        item("Save to file") {
-                            action {
-                                fa2.stop()
-                                log.info("Save button was clicked")
-                                fileName.value = chooseFile(
-                                    title = "Save to",
-                                    filters = arrayOf(FileChooser.ExtensionFilter("Text files", "*.csv")),
-                                    mode = FileChooserMode.Save
-                                ).checkFileName()
-                                fileName.get()?.let { GraphIO().writeToFile(graph, it) }
-                            }
+                menu("File") {
+                    item("Save to file") {
+                        action {
+                            fa2.stop()
+                            log.info("Save button was clicked")
+                            fileName.value = chooseFile(
+                                title = "Save to",
+                                filters = arrayOf(FileChooser.ExtensionFilter("Text files", "*.csv")),
+                                mode = FileChooserMode.Save
+                            ).checkFileName()
+                            fileName.get()?.let { GraphIO().writeToFile(graph, it) }
                         }
-                        item("Read from file") {
-                            action {
-                                log.info("Reading from file button was clicked")
-                                fileName.value = chooseFile(
-                                    filters = arrayOf(
-                                        FileChooser.ExtensionFilter(
-                                            "Text files", "*.csv"
-                                        )
+                    }
+                    item("Read from file") {
+                        action {
+                            log.info("Reading from file button was clicked")
+                            fileName.value = chooseFile(
+                                filters = arrayOf(
+                                    FileChooser.ExtensionFilter(
+                                        "Text files", "*.csv"
                                     )
-                                ).checkFileName()
-                                fileName.get()?.let {
-                                    val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
-                                    drawNewGraph(vertexInfo)
-                                }
-                            }
-                        }
-                        separator()
-                        item("Save to SQLite") {
-                            action {
-                                fa2.stop()
-                                log.info("Button \"Save to SQLite was clicked\"")
-                                fileName.value = chooseFile(
-                                    filters = arrayOf(
-                                        FileChooser.ExtensionFilter(
-                                            "SQLite", "*.sqlite", "*.sqlite3"
-                                        )
-                                    ),
-                                    mode = FileChooserMode.Save,
-                                ).checkFileName()
-                                fileName.get()?.let { GraphIO().writeToSQLite(graph, it) }
-                            }
-                        }
-                        item("Read from SQLite") {
-                            action  {
-                                log.info("Button \"Read from SQLite was clicked\"")
-                                fileName.value = chooseFile(
-                                    filters = arrayOf(
-                                        FileChooser.ExtensionFilter(
-                                            "SQLite", "*.sqlite3", "*.sqlite"
-                                        )
-                                    ),
-                                    mode = FileChooserMode.Single
-                                ).checkFileName()
-                                fileName.get()?.let {
-                                    val vertexInfo = GraphIO().readFromSQLite(graph, fileName.get())
-                                    drawNewGraph(vertexInfo)
-                                }
-                            }
-                        }
-                        separator()
-                        item("Save to Neo4j") {
-                            action {
-                                log.info("Saving to Neo4j button was clicked")
-                                GraphIO().writeToNeo4j(graph)
-
-                                fa2.stop()
-                            }
-                        }
-                        item("Read from Neo4j") {
-                            action {
-                                log.info("Reading from Neo4j button was clicked")
-                                val vertexInfo = GraphIO().readFromNeo4j(graph)
+                                )
+                            ).checkFileName()
+                            fileName.get()?.let {
+                                val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
                                 drawNewGraph(vertexInfo)
                             }
                         }
                     }
                     separator()
-                    item("Reset") {
+                    item("Save to SQLite") {
                         action {
-                            fileName.value = ""
-                            arrangeVertices()
-                            modalStage?.close()
+                            fa2.stop()
+                            log.info("Button \"Save to SQLite was clicked\"")
+                            fileName.value = chooseFile(
+                                filters = arrayOf(
+                                    FileChooser.ExtensionFilter(
+                                        "SQLite", "*.sqlite", "*.sqlite3"
+                                    )
+                                ),
+                                mode = FileChooserMode.Save,
+                            ).checkFileName()
+                            fileName.get()?.let { GraphIO().writeToSQLite(graph, it) }
                         }
                     }
+                    item("Read from SQLite") {
+                        action  {
+                            log.info("Button \"Read from SQLite was clicked\"")
+                            fileName.value = chooseFile(
+                                filters = arrayOf(
+                                    FileChooser.ExtensionFilter(
+                                        "SQLite", "*.sqlite3", "*.sqlite"
+                                    )
+                                ),
+                                mode = FileChooserMode.Single
+                            ).checkFileName()
+                            fileName.get()?.let {
+                                val vertexInfo = GraphIO().readFromSQLite(graph, fileName.get())
+                                drawNewGraph(vertexInfo)
+                            }
+                        }
+                    }
+                    separator()
+                    item("Save to Neo4j") {
+                        action {
+                            log.info("Saving to Neo4j button was clicked")
+                            GraphIO().writeToNeo4j(graph)
+
+                            fa2.stop()
+                        }
+                    }
+                    item("Read from Neo4j") {
+                        action {
+                            log.info("Reading from Neo4j button was clicked")
+                            val vertexInfo = GraphIO().readFromNeo4j(graph)
+                            drawNewGraph(vertexInfo)
+                        }
+                    }
+                    separator()
                     item("Close") {
                         action {
                             primaryStage.close()
+                        }
+                    }
+                }
+                menu("Graphs") {
+                    item("Graph0 (0.7K)") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Graph0 (0.7K)\" was clicked")
+                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    item("Graph1 (0.9K)") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Graph1 (0.9K)\" was clicked")
+                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    item("Graph4 (34)") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Graph4 (34)\" was clicked")
+                            GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    item("Graph5 (62)") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Graph5 (62)\" was clicked")
+                            GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    item("Graph2 (5K)") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Graph2 (5K)\" was clicked")
+                            GraphIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
+                            arrangeInCircle()
+                        }
+                    }
+
+                    item("Graph3 (7K)") {
+                        useMaxWidth = true
+                        action {
+                            log.info("Button \"Graph3 (7K)\" was clicked")
+                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
+                            arrangeInCircle()
                         }
                     }
                 }
@@ -372,6 +418,7 @@ class MainView : View("Graph visualizer") {
                     expandedProperty().set(false)
 
                     button("Set black color to vertices") {
+                        useMaxWidth = true
                         action {
                             log.info("Button \"Set black color to vertices\" was clicked")
                             vertexController.setBlackColor(graph.vertices().values)
@@ -379,70 +426,17 @@ class MainView : View("Graph visualizer") {
                     }
 
                     button("Increase radius") {
+                        useMaxWidth = true
                         action {
                             vertexController.increaseRadius(graph.vertices().values)
                         }
                     }
 
                     button("Decrease radius") {
+                        useMaxWidth = true
                         action {
                             vertexController.decreaseRadius(graph.vertices().values)
                         }
-                    }
-                }
-
-
-                button("Graph0 (0.7K)") {
-                    useMaxWidth = true
-                    action {
-                        log.info("Button \"Graph0 (0.7K)\" was clicked")
-                        GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
-                        arrangeInCircle()
-                    }
-                }
-
-                button("Graph1 (0.9K)") {
-                    useMaxWidth = true
-                    action {
-                        log.info("Button \"Graph1 (0.9K)\" was clicked")
-                        GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
-                        arrangeInCircle()
-                    }
-                }
-
-                button("Graph4 (34)") {
-                    useMaxWidth = true
-                    action {
-                        log.info("Button \"Graph4 (34)\" was clicked")
-                        GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
-                        arrangeInCircle()
-                    }
-                }
-
-                button("Graph5 (62)") {
-                    useMaxWidth = true
-                    action {
-                        log.info("Button \"Graph5 (62)\" was clicked")
-                        GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
-                        arrangeInCircle()
-                    }
-                }
-
-                button("Graph2 (5K)") {
-                    useMaxWidth = true
-                    action {
-                        log.info("Button \"Graph2 (5K)\" was clicked")
-                        GraphIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
-                        arrangeInCircle()
-                    }
-                }
-
-                button("Graph3 (7K)") {
-                    useMaxWidth = true
-                    action {
-                        log.info("Button \"Graph3 (7K)\" was clicked")
-                        GraphIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
-                        arrangeInCircle()
                     }
                 }
             }
@@ -494,12 +488,6 @@ class MainView : View("Graph visualizer") {
 
         fa2.stop()
         fa2.prepareFA2(graph)
-    }
-
-    private fun arrangeVertices() {
-        currentStage?.apply {
-            strategy.place(graph.width, graph.height, graph.vertices().values)
-        }
     }
 
     private fun List<File>.checkFileName(): String? {
