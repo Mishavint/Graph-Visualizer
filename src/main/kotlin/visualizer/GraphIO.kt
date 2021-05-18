@@ -22,9 +22,9 @@ class GraphIO {
     )
 
     object Neo4jConnectionTicket {
-        const val uri = "bolt://3.238.4.152:7687"
-        const val username = "neo4j"
-        const val password = "shaves-strain-roadside"
+        var uri = "bolt://3.86.244.161:7687"
+        var username = "neo4j"
+        var password = "eighths-career-policy"
     }
 
     object VerticesTable : IdTable<String>() {
