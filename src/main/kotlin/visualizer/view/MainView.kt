@@ -1,6 +1,5 @@
 package visualizer.view
 
-import visualizer.controller.GraphIO
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
@@ -8,7 +7,7 @@ import javafx.scene.paint.Color
 import javafx.stage.*
 import tornadofx.*
 import visualizer.controller.*
-import visualizer.model.Algorithms
+import visualizer.model.*
 import java.io.File
 import kotlin.properties.Delegates
 
@@ -34,7 +33,7 @@ class MainView : View("Graph visualizer") {
                                 filters = arrayOf(FileChooser.ExtensionFilter("Text files", "*.csv")),
                                 mode = FileChooserMode.Save
                             ).checkFileName()
-                            fileName.get()?.let { GraphIO().writeToFile(graph, it) }
+                            fileName.get()?.let { FileIO().write(graph, it) }
                         }
                     }
                     item("Read from file") {
@@ -48,7 +47,7 @@ class MainView : View("Graph visualizer") {
                                 )
                             ).checkFileName()
                             fileName.get()?.let {
-                                val vertexInfo = GraphIO().readFromFile(graph, fileName.get())
+                                val vertexInfo = FileIO().read(graph, fileName.get())
                                 drawNewGraph(vertexInfo)
                             }
                         }
@@ -66,7 +65,7 @@ class MainView : View("Graph visualizer") {
                                 ),
                                 mode = FileChooserMode.Save,
                             ).checkFileName()
-                            fileName.get()?.let { GraphIO().writeToSQLite(graph, it) }
+                            fileName.get()?.let { SQLiteIO().write(graph, it) }
                         }
                     }
                     item("Read from SQLite") {
@@ -81,7 +80,7 @@ class MainView : View("Graph visualizer") {
                                 mode = FileChooserMode.Single
                             ).checkFileName()
                             fileName.get()?.let {
-                                val vertexInfo = GraphIO().readFromSQLite(graph, fileName.get())
+                                val vertexInfo = SQLiteIO().read(graph, fileName.get())
                                 drawNewGraph(vertexInfo)
                             }
                         }
@@ -90,7 +89,7 @@ class MainView : View("Graph visualizer") {
                     item("Save to Neo4j") {
                         action {
                             log.info("Saving to Neo4j button was clicked")
-                            GraphIO().writeToNeo4j(graph)
+                            Neo4jIO().write(graph, "")
 
                             fa2.stop()
                         }
@@ -98,7 +97,7 @@ class MainView : View("Graph visualizer") {
                     item("Read from Neo4j") {
                         action {
                             log.info("Reading from Neo4j button was clicked")
-                            val vertexInfo = GraphIO().readFromNeo4j(graph)
+                            val vertexInfo = Neo4jIO().read(graph, "")
                             drawNewGraph(vertexInfo)
                         }
                     }
@@ -115,7 +114,7 @@ class MainView : View("Graph visualizer") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph4 (34)\" was clicked")
-                            GraphIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
+                            FileIO().readGraphEdges(graph, "graphs/soc-karate.mtx")
                             arrangeInCircle()
                         }
                     }
@@ -124,7 +123,7 @@ class MainView : View("Graph visualizer") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph5 (62)\" was clicked")
-                            GraphIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
+                            FileIO().readGraphEdges(graph, "graphs/soc-dolphins.mtx")
                             arrangeInCircle()
                         }
                     }
@@ -133,7 +132,7 @@ class MainView : View("Graph visualizer") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph0 (0.7K)\" was clicked")
-                            GraphIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
+                            FileIO().readGraphEdges(graph, "graphs/fb-pages-food.edges")
                             arrangeInCircle()
                         }
                     }
@@ -142,7 +141,7 @@ class MainView : View("Graph visualizer") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph1 (0.9K)\" was clicked")
-                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
+                            FileIO().readGraphEdges(graph, "graphs/soc-wiki-Vote.mtx")
                             arrangeInCircle()
                         }
                     }
@@ -151,7 +150,7 @@ class MainView : View("Graph visualizer") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph2 (5K)\" was clicked")
-                            GraphIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
+                            FileIO().readGraphEdges(graph, "graphs/soc-advogato.edges")
                             arrangeInCircle()
                         }
                     }
@@ -160,7 +159,7 @@ class MainView : View("Graph visualizer") {
                         useMaxWidth = true
                         action {
                             log.info("Button \"Graph3 (7K)\" was clicked")
-                            GraphIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
+                            FileIO().readGraphEdges(graph, "graphs/soc-wiki-elec.edges")
                             arrangeInCircle()
                         }
                     }
