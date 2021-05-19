@@ -1,18 +1,18 @@
-package visualizer.view
+package visualizer.model
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import tornadofx.doubleProperty
-import visualizer.model.*
 import java.util.*
 import nl.cwts.networkanalysis.run.RunNetworkClustering
 import javafx.scene.paint.Color
 import tornadofx.FX.Companion.log
+import visualizer.view.GraphView
 import kotlin.random.Random
 
-class Algorithms(private val graphView: GraphView) {
+class Algorithms() {
 
-    fun mainVertices(coefficient: Double) {
+    fun mainVertices(graphView: GraphView, coefficient: Double) {
         log.info("Searching of centrality started")
         val lstAdj = graphView.graph().listOfAdjacency()
         val vertices = graphView.graph().vertices()
@@ -85,7 +85,7 @@ class Algorithms(private val graphView: GraphView) {
         log.info("Searching of centrality was finished")
     }
 
-    fun resetCentrality(prevRadius: Double) {
+    fun resetCentrality(graphView: GraphView, prevRadius: Double) {
         log.info("Resetting centrality was started")
         graphView.vertices().forEach {
             it.value.rebindRadiusProperty(doubleProperty(prevRadius))
@@ -99,7 +99,7 @@ class Algorithms(private val graphView: GraphView) {
         Random.nextInt(0, 255)
     )
 
-    fun communitiesDetection(resolution: Double = 0.14) {
+    fun communitiesDetection(graphView: GraphView, resolution: Double = 0.14) {
       
         log.info("Communities detection was started")
       

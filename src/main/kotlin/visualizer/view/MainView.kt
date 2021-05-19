@@ -8,6 +8,7 @@ import javafx.scene.paint.Color
 import javafx.stage.*
 import tornadofx.*
 import visualizer.controller.*
+import visualizer.model.Algorithms
 import java.io.File
 import kotlin.properties.Delegates
 
@@ -15,6 +16,7 @@ class MainView : View("Graph visualizer") {
     private val fileName = SimpleStringProperty("DefaultName")
     private var graph = GraphView()
     private val fa2 = FA2Controller()
+    private val algorithms = Algorithms()
     private val vertexController = VertexController()
     private val scrollController = ScrollController()
 
@@ -193,7 +195,7 @@ class MainView : View("Graph visualizer") {
                                 try {
                                     if ( it.text.toDouble() < 0.0 )
                                         throw java.lang.NumberFormatException()
-                                    Algorithms(graph).communitiesDetection(it.text.toDouble())
+                                   algorithms.communitiesDetection(graph, it.text.toDouble())
                                 } catch (ex:java.lang.NumberFormatException) {
                                     alert(Alert.AlertType.ERROR, "Please enter valid resolution")
                                     return@action
@@ -397,7 +399,7 @@ class MainView : View("Graph visualizer") {
                                 prevRadius = graph.vertices().values.first().radius
                                 if (counter == 0) {
                                     coefficient = slider.value
-                                    Algorithms(graph).mainVertices(coefficient)
+                                    algorithms.mainVertices(graph, coefficient)
                                 }
                                 counter ++
                             }
@@ -410,7 +412,7 @@ class MainView : View("Graph visualizer") {
                             log.info("Button \"Reset Centrality\" was clicked")
                             if (counter != 0) {
                                 counter = 0
-                                Algorithms(graph).resetCentrality(prevRadius)
+                               algorithms.resetCentrality(graph, prevRadius)
                             }
                         }
                     }
