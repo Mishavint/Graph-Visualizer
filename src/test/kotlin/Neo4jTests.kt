@@ -3,7 +3,9 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.neo4j.driver.AuthTokens
 import org.neo4j.driver.GraphDatabase
-import visualizer.controller.GraphIO
+import visualizer.model.FileIO
+import visualizer.model.GraphIO
+import visualizer.model.Neo4jIO
 import visualizer.view.GraphView
 
 internal class Neo4jTests {
@@ -12,8 +14,8 @@ internal class Neo4jTests {
         @Test
         fun `validating uri, username, password`() {
             val driver = GraphDatabase.driver(
-                GraphIO.Neo4jConnectionTicket.uri,
-                AuthTokens.basic(GraphIO.Neo4jConnectionTicket.username, GraphIO.Neo4jConnectionTicket.password)
+                Neo4jIO.Neo4jConnectionTicket.uri,
+                AuthTokens.basic(Neo4jIO.Neo4jConnectionTicket.username, Neo4jIO.Neo4jConnectionTicket.password)
             )
             val session = driver.session()
 
@@ -28,28 +30,28 @@ internal class Neo4jTests {
     inner class DBmanage {
         private val testData = Triple("bolt://3.239.150.207:7687", "neo4j", "wraps-span-canal")
         private val userData = Triple(
-            GraphIO.Neo4jConnectionTicket.uri,
-            GraphIO.Neo4jConnectionTicket.username,
-            GraphIO.Neo4jConnectionTicket.password
+            Neo4jIO.Neo4jConnectionTicket.uri,
+            Neo4jIO.Neo4jConnectionTicket.username,
+            Neo4jIO.Neo4jConnectionTicket.password
         )
 
         private var tmpGraph = GraphView()
         private val falseGraph = GraphView()
 
         init {
-            GraphIO().readGraphEdges(falseGraph, "graphs/soc-karate.mtx")
+            FileIO().readGraphEdges(falseGraph, "graphs/soc-karate.mtx")
         }
 
         private fun changeDBConnectionData(tr: Triple<String, String, String>) {
-            GraphIO.Neo4jConnectionTicket.uri = tr.first
-            GraphIO.Neo4jConnectionTicket.username = tr.second
-            GraphIO.Neo4jConnectionTicket.password = tr.third
+            Neo4jIO.Neo4jConnectionTicket.uri = tr.first
+            Neo4jIO.Neo4jConnectionTicket.username = tr.second
+            Neo4jIO.Neo4jConnectionTicket.password = tr.third
         }
 
         private fun cleanDB() {
             val driver = GraphDatabase.driver(
-                GraphIO.Neo4jConnectionTicket.uri,
-                AuthTokens.basic(GraphIO.Neo4jConnectionTicket.username, GraphIO.Neo4jConnectionTicket.password)
+                Neo4jIO.Neo4jConnectionTicket.uri,
+                AuthTokens.basic(Neo4jIO.Neo4jConnectionTicket.username, Neo4jIO.Neo4jConnectionTicket.password)
             )
             val session = driver.session()
 
@@ -92,14 +94,14 @@ internal class Neo4jTests {
 
             cleanDB()
 
-            GraphIO().writeToNeo4j(falseGraph)
+            Neo4jIO().write(falseGraph, "")
             changeDBConnectionData(userData)
         }
 
         @Test
         fun `Read from Neo DB`() {
             changeDBConnectionData(testData)
-            GraphIO().readFromNeo4j(tmpGraph)
+            Neo4jIO().read(tmpGraph, "")
 
             assertTrue(compareGraphs(tmpGraph, falseGraph))
 
