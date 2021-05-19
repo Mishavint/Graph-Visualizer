@@ -5,7 +5,7 @@ import tornadofx.Controller
 import visualizer.view.VertexView
 import java.util.*
 
-class RandomPlacementStrategy: Controller() {
+class RandomVerticesPlacement: Controller() {
 
     private val random = Random()
 

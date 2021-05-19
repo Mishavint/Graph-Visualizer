@@ -1,10 +1,10 @@
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import visualizer.model.FileIO
+import visualizer.model.FileIOStrategy
 import visualizer.model.UndirectedGraph
 import visualizer.view.GraphView
-import visualizer.model.GraphIO
+import visualizer.model.GraphIOStrategy
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -28,7 +28,7 @@ class FileTest {
 
         @Test
         fun `Saving works as expected`() {
-            FileIO().write(graphView, fileName)
+            FileIOStrategy().write(graphView, fileName)
 
             val expectedNodesInFile = ArrayList<String>()
             expectedNodesInFile.add("1,0.0 0.0,5.0,0x000000ff,2,0.0 0.0,5.0,0x000000ff,12")
@@ -53,7 +53,7 @@ class FileTest {
 
         private val graphView = GraphView()
 
-        val verticesInfo = FileIO().read(graphView, fileName)
+        val verticesInfo = FileIOStrategy().read(graphView, fileName)
 
         @Test
         fun `reading works as expected`() {

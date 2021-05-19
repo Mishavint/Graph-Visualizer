@@ -2,13 +2,13 @@ package visualizer.controller
 
 import tornadofx.Controller
 import tornadofx.doubleProperty
-import visualizer.model.GraphIO
+import visualizer.model.GraphIOStrategy
 import visualizer.view.GraphView
 
-class FilePlacementStrategy: Controller() {
+class FileVerticesPlacement: Controller() {
 
     fun place(graphView: GraphView,
-              vertexInfo: MutableMap<String, GraphIO.VertexInfo>
+              vertexInfo: MutableMap<String, GraphIOStrategy.VertexInfo>
     ) {
         graphView.vertices().forEach {
             val curInfo = vertexInfo[it.key.element]!!

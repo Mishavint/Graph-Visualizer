@@ -6,7 +6,7 @@ import tornadofx.FX
 import tornadofx.c
 import visualizer.view.GraphView
 
-class Neo4jIO: GraphIO {
+class Neo4jIOStrategy: GraphIOStrategy {
 
     object Neo4jConnectionTicket {
         var uri = "bolt://3.86.244.161:7687"
@@ -14,9 +14,9 @@ class Neo4jIO: GraphIO {
         var password = "eighths-career-policy"
     }
 
-    override fun read(graphView: GraphView, fileName: String): MutableMap<String, GraphIO.VertexInfo> {
+    override fun read(graphView: GraphView, fileName: String): MutableMap<String, GraphIOStrategy.VertexInfo> {
         FX.log.info("Reading graph from data base was started (Neo4j)")
-        val vertexInfo = mutableMapOf<String, GraphIO.VertexInfo>()
+        val vertexInfo = mutableMapOf<String, GraphIOStrategy.VertexInfo>()
         val graph = UndirectedGraph()
 
         val driver = GraphDatabase.driver(
@@ -38,7 +38,7 @@ class Neo4jIO: GraphIO {
                 val vColor = c(node["color"].asString())
 
                 graph.addVertex(v)
-                vertexInfo[v] = GraphIO.VertexInfo(vx, vy, vRadius, vColor)
+                vertexInfo[v] = GraphIOStrategy.VertexInfo(vx, vy, vRadius, vColor)
             }
 
             for (edge in  edgeInfoFromNeo) {

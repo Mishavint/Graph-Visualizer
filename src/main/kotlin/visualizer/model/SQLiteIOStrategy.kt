@@ -7,7 +7,7 @@ import tornadofx.FX
 import tornadofx.c
 import visualizer.view.GraphView
 
-class SQLiteIO: GraphIO {
+class SQLiteIOStrategy: GraphIOStrategy {
 
     object VerticesTable : IdTable<String>() {
         override val id = VerticesTable.varchar("id", 256).entityId()
@@ -24,10 +24,10 @@ class SQLiteIO: GraphIO {
         val element = varchar("Element", 256)
     }
 
-    override fun read(graphView: GraphView, fileName: String): MutableMap<String, GraphIO.VertexInfo> {
+    override fun read(graphView: GraphView, fileName: String): MutableMap<String, GraphIOStrategy.VertexInfo> {
         FX.log.info("Reading graph from data base was started (SQLLite)")
         Database.connect("jdbc:sqlite:${fileName}", "org.sqlite.JDBC")
-        val vertexInfo = mutableMapOf<String, GraphIO.VertexInfo>()
+        val vertexInfo = mutableMapOf<String, GraphIOStrategy.VertexInfo>()
         val graph = UndirectedGraph()
 
         transaction {
@@ -39,7 +39,7 @@ class SQLiteIO: GraphIO {
                 val vColor = c(vertexInTable[VerticesTable.color])
 
                 graph.addVertex(v)
-                vertexInfo[v] = GraphIO.VertexInfo(vx, vy, vRadius, vColor)
+                vertexInfo[v] = GraphIOStrategy.VertexInfo(vx, vy, vRadius, vColor)
             }
             EdgesTable.selectAll().forEach { edgeInTable ->
                 val v1 = edgeInTable[EdgesTable.firstVertex].toString()

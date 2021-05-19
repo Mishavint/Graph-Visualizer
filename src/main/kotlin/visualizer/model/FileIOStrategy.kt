@@ -3,52 +3,56 @@ package visualizer.model
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
 import org.apache.commons.csv.CSVPrinter
+import org.apache.commons.csv.CSVRecord
 import tornadofx.FX
 import tornadofx.c
 import visualizer.view.GraphView
 import java.nio.file.Files
 import java.nio.file.Paths
 
-const val LABEL1_INDEX = 0
-const val POSITION1_INDEX = 1
-const val RADIUS1_INDEX = 2
-const val COLOR1_INDEX = 3
-const val LABEL2_INDEX = 4
-const val POSITION2_INDEX = 5
-const val RADIUS2_INDEX = 6
-const val COLOR2_INDEX = 7
-const val EDGE_INDEX = 8
-const val GAP_SYM = "-"
+class FileIOStrategy: GraphIOStrategy {
+    private val gap = "-"
 
-class FileIO: GraphIO {
+    inner class CSVInfo(rec: CSVRecord) {
+        val label1: String = rec[0]
+        val position1: String = rec[1]
+        val radius1: String = rec[2]
+        val color1: String = rec[3]
+        val label2: String = rec[4]
+        val position2: String = rec[5]
+        val radius2: String = rec[6]
+        val color2: String = rec[7]
+        val edgeLabel: String = rec[8]
+    }
 
-    override fun read(graphView: GraphView, fileName: String): MutableMap<String, GraphIO.VertexInfo> {
+    override fun read(graphView: GraphView, fileName: String): MutableMap<String, GraphIOStrategy.VertexInfo> {
         FX.log.info("Reading from file was started")
         val reader = Files.newBufferedReader(Paths.get(fileName))
         val csvReader = CSVParser(reader, CSVFormat.DEFAULT)
 
         val graph = UndirectedGraph()
 
-        val vertexInfo = mutableMapOf<String, GraphIO.VertexInfo>()
+        val vertexInfo = mutableMapOf<String, GraphIOStrategy.VertexInfo>()
         for (rec in csvReader) {
-            val v = rec[LABEL1_INDEX]
-            val u = rec[LABEL2_INDEX]
-            val e = rec[EDGE_INDEX]
+            val info = CSVInfo(rec)
+            val v = info.label1
+            val u = info.label2
+            val e = info.edgeLabel
 
-            val vx = rec[POSITION1_INDEX].split(" ")[0].toDouble()
-            val vy = rec[POSITION1_INDEX].split(" ")[1].toDouble()
-            val vRadius = rec[RADIUS1_INDEX].toDouble()
-            val vColor = c(rec[COLOR1_INDEX])
+            val vx = info.position1.split(" ")[0].toDouble()
+            val vy = info.position1.split(" ")[1].toDouble()
+            val vRadius = info.radius1.toDouble()
+            val vColor = c(info.color1)
             graph.addVertex(v)
-            vertexInfo[v] = GraphIO.VertexInfo(vx, vy, vRadius, vColor)
+            vertexInfo[v] = GraphIOStrategy.VertexInfo(vx, vy, vRadius, vColor)
 
-            if (u != GAP_SYM && e != GAP_SYM) {
-                val ux = rec[POSITION2_INDEX].split(" ")[0].toDouble()
-                val uy = rec[POSITION2_INDEX].split(" ")[1].toDouble()
-                val uRadius = rec[RADIUS2_INDEX].toDouble()
-                val uColor = c(rec[COLOR2_INDEX])
+            if (u != gap && e != gap) {
+                val ux = info.position2.split(" ")[0].toDouble()
+                val uy = info.position2.split(" ")[1].toDouble()
+                val uRadius = info.radius2.toDouble()
+                val uColor = c(info.color2)
                 graph.addVertex(u)
-                vertexInfo[u] = GraphIO.VertexInfo(ux, uy, uRadius, uColor)
+                vertexInfo[u] = GraphIOStrategy.VertexInfo(ux, uy, uRadius, uColor)
                 graph.addEdge(v, u, e)
             }
         }
@@ -88,7 +92,7 @@ class FileIO: GraphIO {
                     ?: throw IllegalStateException("VertexView for $it not found")
                 csvPrinter.printRecord(
                     it.key.element, "${itView.centerX} ${itView.centerY}", itView.radius,
-                    itView.color.toString(), GAP_SYM, GAP_SYM, GAP_SYM, GAP_SYM, GAP_SYM
+                    itView.color.toString(), gap, gap, gap, gap, gap
                 )
             }
         }

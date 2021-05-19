@@ -9,7 +9,7 @@ import kotlin.math.sin
 import kotlin.math.cos
 import kotlin.random.Random
 
-class CircularPlacementStrategy: Controller() {
+class CircularVerticesPlacement: Controller() {
     fun place(width: Double, height: Double, vertices: Collection<VertexView>) {
         log.info("Circular placement started")
         if (vertices.isEmpty()) {

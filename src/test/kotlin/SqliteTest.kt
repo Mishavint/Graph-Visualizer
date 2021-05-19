@@ -1,16 +1,14 @@
 import javafx.beans.property.SimpleDoubleProperty
 import org.junit.jupiter.api.*
-import visualizer.model.GraphIO
-import visualizer.controller.FilePlacementStrategy
+import visualizer.controller.FileVerticesPlacement
 import visualizer.view.*
 import java.io.File
 import org.junit.jupiter.api.Assertions.*
-import visualizer.model.Neo4jIO
-import visualizer.model.SQLiteIO
+import visualizer.model.SQLiteIOStrategy
 
 class SqliteTest {
     private val graph = GraphView(props.SAMPLE_GRAPH)
-    private val graphIO = SQLiteIO()
+    private val graphIO = SQLiteIOStrategy()
     private val fileNameForSqliteTest = "src/test/kotlin/SQLiteTest"
 
     @Test
@@ -26,7 +24,7 @@ class SqliteTest {
         graphIO.write(graph, fileNameForSqliteTest)
         assertDoesNotThrow {
             val vertexInfo = graphIO.read(graph, fileNameForSqliteTest)
-            FilePlacementStrategy().place(graph, vertexInfo)
+            FileVerticesPlacement().place(graph, vertexInfo)
         }
         File(fileNameForSqliteTest).delete()
     }
@@ -41,7 +39,7 @@ class SqliteTest {
         val oldVertices = graph.vertices().values.toTypedArray()
 
         val vertexInfo = graphIO.read(graph, fileNameForSqliteTest)
-        FilePlacementStrategy().place(graph, vertexInfo)
+        FileVerticesPlacement().place(graph, vertexInfo)
         val newVertices = graph.vertices().values.toTypedArray()
 
         for(i in oldVertices.indices) {

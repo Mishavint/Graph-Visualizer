@@ -3,7 +3,7 @@ package visualizer.model
 import javafx.scene.paint.Color
 import visualizer.view.GraphView
 
-interface GraphIO {
+interface GraphIOStrategy {
     data class VertexInfo(
         val centerX: Double,
         val centerY: Double,
