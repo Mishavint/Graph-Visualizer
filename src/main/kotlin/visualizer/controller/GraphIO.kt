@@ -13,6 +13,17 @@ import java.nio.file.*
 import org.neo4j.driver.AuthTokens
 import org.neo4j.driver.GraphDatabase
 
+const val LABEL1_INDEX = 0
+const val POSITION1_INDEX = 1
+const val RADIUS1_INDEX = 2
+const val COLOR1_INDEX = 3
+const val LABEL2_INDEX = 4
+const val POSITION2_INDEX = 5
+const val RADIUS2_INDEX = 6
+const val COLOR2_INDEX = 7
+const val EDGE_INDEX = 8
+const val GAP_SYM = "-"
+
 class GraphIO {
     data class VertexInfo(
         val centerX: Double,
@@ -70,7 +81,7 @@ class GraphIO {
                     ?: throw IllegalStateException("VertexView for $it not found")
                 csvPrinter.printRecord(
                     it.key.element, "${itView.centerX} ${itView.centerY}", itView.radius,
-                    itView.color.toString(), "-", "-", "-", "-", "-"
+                    itView.color.toString(), GAP_SYM, GAP_SYM, GAP_SYM, GAP_SYM, GAP_SYM
                 )
             }
         }
@@ -88,22 +99,22 @@ class GraphIO {
 
         val vertexInfo = mutableMapOf<String, VertexInfo>()
         for (rec in csvReader) {
-            val v = rec[0]
-            val u = rec[4]
-            val e = rec[8]
+            val v = rec[LABEL1_INDEX]
+            val u = rec[LABEL2_INDEX]
+            val e = rec[EDGE_INDEX]
 
-            val vx = rec[1].split(" ")[0].toDouble()
-            val vy = rec[1].split(" ")[1].toDouble()
-            val vRadius = rec[2].toDouble()
-            val vColor = c(rec[3])
+            val vx = rec[POSITION1_INDEX].split(" ")[0].toDouble()
+            val vy = rec[POSITION1_INDEX].split(" ")[1].toDouble()
+            val vRadius = rec[RADIUS1_INDEX].toDouble()
+            val vColor = c(rec[COLOR1_INDEX])
             graph.addVertex(v)
             vertexInfo[v] = VertexInfo(vx, vy, vRadius, vColor)
 
-            if (u != "-" && e != "-") {
-                val ux = rec[5].split(" ")[0].toDouble()
-                val uy = rec[5].split(" ")[1].toDouble()
-                val uRadius = rec[6].toDouble()
-                val uColor = c(rec[7])
+            if (u != GAP_SYM && e != GAP_SYM) {
+                val ux = rec[POSITION2_INDEX].split(" ")[0].toDouble()
+                val uy = rec[POSITION2_INDEX].split(" ")[1].toDouble()
+                val uRadius = rec[RADIUS2_INDEX].toDouble()
+                val uColor = c(rec[COLOR2_INDEX])
                 graph.addVertex(u)
                 vertexInfo[u] = VertexInfo(ux, uy, uRadius, uColor)
                 graph.addEdge(v, u, e)
